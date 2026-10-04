@@ -1,0 +1,3 @@
+import { NgModule } from '@angular/core'; import { RouterModule, Routes } from '@angular/router'; import { CheckoutComponent } from './pages/checkout/checkout.component'; import { OrderConfirmationComponent } from './pages/order-confirmation/order-confirmation.component';
+const routes: Routes = [{ path: '', component: CheckoutComponent, title: 'Finaliser ma commande · Amansia' }, { path: 'confirmation', component: OrderConfirmationComponent, title: 'Commande confirmée · Amansia' }];
+@NgModule({ imports: [RouterModule.forChild(routes)], exports: [RouterModule] }) export class CheckoutRoutingModule {}

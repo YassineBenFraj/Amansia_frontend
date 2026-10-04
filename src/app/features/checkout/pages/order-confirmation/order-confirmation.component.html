@@ -1,0 +1,12 @@
+<main class="confirmation-page container">
+  <div *ngIf="loading" class="confirmation-loading"></div>
+  <section *ngIf="!loading && order && payment?.statut === 'PAYE'" class="confirmation-card">
+    <span class="confirmation-mark">✓</span><p class="eyebrow">COMMANDE ENREGISTRÉE</p>
+    <h1>Merci pour votre confiance.</h1>
+    <p>Votre commande <strong>{{ order.numeroCommande || '#' + order.id }}</strong> a été créée après la confirmation de votre paiement.</p>
+    <dl><div><dt>Total</dt><dd>{{ order.total | tnd }}</dd></div><div><dt>Commande</dt><dd>{{ order.statut }}</dd></div><div><dt>Paiement</dt><dd>{{ paymentLabel() }}</dd></div></dl>
+    <p class="notice">Votre paiement sécurisé a été confirmé.</p>
+    <div class="confirmation-actions"><a class="button primary" routerLink="/mes-commandes">Voir mes commandes</a><a class="button secondary" routerLink="/produits">Continuer mes achats</a></div>
+  </section>
+  <section *ngIf="error" class="catalogue-message"><h1>Commande introuvable</h1><p>{{ error }}</p><a class="button secondary" routerLink="/">Retour à l’accueil</a></section>
+</main>

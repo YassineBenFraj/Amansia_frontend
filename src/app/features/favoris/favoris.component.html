@@ -1,0 +1,34 @@
+<main class="favorites-page container">
+  <header>
+    <p class="eyebrow">VOTRE SÉLECTION</p>
+    <h1>Mes favoris</h1>
+    <p>Retrouvez les meubles que vous aimez.</p>
+  </header>
+  <p *ngIf="error" class="error-banner" role="alert">{{ error }} <button type="button" (click)="charger()">Réessayer</button></p>
+  <div *ngIf="loading" class="favorites-loading">Chargement des favoris…</div>
+  <ng-container *ngIf="!loading">
+    <div class="favorites-grid" *ngIf="favoris.items$ | async as items">
+      <article class="favorite-card" *ngFor="let item of items">
+        <a [routerLink]="['/produits', item.produitId]" class="favorite-image">
+          <img appImageFallback [src]="image(item)" [alt]="item.nom" loading="lazy" />
+        </a>
+        <div class="favorite-info">
+          <h2><a [routerLink]="['/produits', item.produitId]">{{ item.nom }}</a></h2>
+          <div class="price">
+            <strong>{{ item.prixPromotion || item.prix | tnd }}</strong>
+            <del *ngIf="item.prixPromotion">{{ item.prix | tnd }}</del>
+          </div>
+          <p *ngIf="!item.actif">Produit indisponible</p>
+          <button type="button" (click)="retirer(item)" [disabled]="favoris.isPending(item.produitId)">
+            ♥ Retirer des favoris
+          </button>
+        </div>
+      </article>
+      <div class="empty-state" *ngIf="!items.length && !error">
+        <h2>Aucun favori pour le moment</h2>
+        <p>Explorez le catalogue et enregistrez vos coups de cœur.</p>
+        <a class="button primary" routerLink="/produits">Découvrir les produits</a>
+      </div>
+    </div>
+  </ng-container>
+</main>

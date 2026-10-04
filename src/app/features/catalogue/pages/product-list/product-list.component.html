@@ -1,0 +1,103 @@
+<main class="catalogue-page container">
+  <header class="catalogue-heading">
+    <p class="eyebrow">COLLECTION AMANSIA</p>
+    <h1>Des pièces faites pour vivre.</h1>
+    <p>
+      Explorez notre sélection de mobilier et trouvez l’équilibre entre confort,
+      style et caractère.
+    </p>
+  </header>
+  <div class="catalogue-toolbar">
+    <label class="search-box"
+      ><span class="sr-only">Rechercher un produit</span
+      ><span aria-hidden="true">⌕</span
+      ><input
+        type="search"
+        [formControl]="searchControl"
+        placeholder="Rechercher par nom…"
+    /></label>
+    <div class="category-filters" aria-label="Filtrer par catégorie">
+      <button
+        type="button"
+        [class.active]="selectedCategory === null"
+        (click)="selectCategory(null)"
+      >
+        Tous</button
+      ><button
+        type="button"
+        *ngFor="let category of categories"
+        [class.active]="selectedCategory === category.id"
+        (click)="selectCategory(category.id)"
+      >
+        {{ category.nom }}
+      </button>
+    </div>
+  </div>
+  <div class="catalogue-meta" *ngIf="!loading">
+    <span
+      >{{ produits.length }}
+      {{ produits.length > 1 ? "produits" : "produit" }}</span
+    ><span *ngIf="searchControl.value">pour « {{ searchControl.value }} »</span>
+  </div>
+  <div *ngIf="loading" class="loading-grid catalogue-skeleton" role="status" aria-label="Chargement des produits">
+    <div class="skeleton-card" *ngFor="let item of [1, 2, 3, 4, 5, 6]">
+      <span class="skeleton-image"></span><span class="skeleton-label"></span><span class="skeleton-title"></span><span class="skeleton-price"></span>
+    </div>
+  </div>
+  <div *ngIf="error && !loading" class="catalogue-message">
+    <p>{{ error }}</p>
+    <button class="button secondary" type="button" (click)="retry()">
+      Réessayer
+    </button>
+  </div>
+  <div
+    class="product-grid catalogue-grid"
+    *ngIf="!loading && !error && produits.length"
+  >
+    <article class="product-card" *ngFor="let produit of visibleProducts">
+      <button type="button" class="favorite-toggle" (click)="toggleFavori(produit, $event)"
+        [disabled]="favoris.isPending(produit.id)"
+        [attr.aria-label]="favoris.isFavorite(produit.id) ? 'Retirer des favoris' : 'Ajouter aux favoris'"
+        [attr.aria-pressed]="favoris.isFavorite(produit.id)">
+        {{ favoris.isFavorite(produit.id) ? '♥' : '♡' }}
+      </button>
+      <a [routerLink]="[produit.id]" class="product-image"
+        ><img
+          appImageFallback
+          [src]="productImage(produit.id)"
+          [alt]="produit.nom"
+          loading="lazy"
+        /><span *ngIf="produit.disponible === false" class="stock-badge">Rupture de stock</span><span *ngIf="produit.prixPromotion" class="badge">Promotion</span
+        ><span class="view-product">Voir le produit</span></a
+      >
+      <div class="product-info">
+        <p>{{ produit.categorieNom }}</p>
+        <h2>
+          <a [routerLink]="[produit.id]">{{ produit.nom }}</a>
+        </h2>
+        <div class="price">
+          <strong>{{ produit.prixPromotion || produit.prix | tnd }}</strong
+          ><del *ngIf="produit.prixPromotion">{{ produit.prix | tnd }}</del>
+        </div>
+        <button type="button" class="compare-action" [class.selected]="comparator.has(produit.id)" [attr.aria-pressed]="comparator.has(produit.id)" (click)="comparator.toggle(produit)">
+          {{ comparator.has(produit.id) ? '✓ À comparer' : 'Comparer' }}
+        </button>
+      </div>
+    </article>
+  </div>
+  <div class="load-more" *ngIf="!loading && !error && visibleCount < produits.length">
+    <button type="button" class="button secondary" (click)="showMore()">Afficher plus de produits</button>
+    <span>{{ visibleCount }} sur {{ produits.length }}</span>
+  </div>
+  <div class="empty-state" *ngIf="!loading && !error && !produits.length">
+    <strong>Aucun produit trouvé</strong>
+    <p>Essayez une autre recherche ou consultez toutes nos collections.</p>
+    <button
+      type="button"
+      class="button secondary"
+      (click)="searchControl.setValue(''); selectCategory(null)"
+    >
+      Réinitialiser les filtres
+    </button>
+  </div>
+</main>

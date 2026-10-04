@@ -1,0 +1,152 @@
+<main>
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">MOBILIER & ART DE VIVRE</p>
+      <h1>Un intérieur qui raconte votre histoire.</h1>
+      <p>
+        Des pièces élégantes, chaleureuses et durables, choisies pour créer un
+        chez-vous qui vous ressemble.
+      </p>
+      <div class="hero-actions">
+        <a class="button primary" routerLink="/produits"
+          >Découvrir la collection</a
+        ><a class="link-arrow" href="#categories"
+          >Explorer les univers <span>→</span></a
+        >
+      </div>
+    </div>
+    <div class="hero-visual">
+      <img
+        src="/images/salon1.jpg"
+        alt="Salon contemporain meublé par Amansia"
+        fetchpriority="high"
+      /><span class="hero-note"
+        >Collection maison<br /><strong>Édition 2026</strong></span
+      >
+    </div>
+  </section>
+
+  <section id="categories" class="section container">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">NOS UNIVERS</p>
+        <h2>Chaque pièce mérite le meilleur</h2>
+      </div>
+      <a routerLink="/produits">Voir tout le catalogue →</a>
+    </div>
+    <div class="category-grid category-skeleton" *ngIf="loading" role="status" aria-label="Chargement des univers">
+      <span *ngFor="let item of [1, 2, 3, 4]"></span>
+    </div>
+    <div class="category-grid" *ngIf="!loading && categories.length; else categoryFallback">
+      <a
+        *ngFor="let category of categories"
+        class="category-card"
+        [routerLink]="['/produits']"
+        [queryParams]="{ categorie: category.id }"
+        ><img appImageFallback [src]="categoryImage(category)" [alt]="category.nom" loading="lazy" /><span
+          ><strong>{{ category.nom }}</strong
+          ><small>Découvrir</small></span
+        ></a
+      >
+    </div>
+    <ng-template #categoryFallback
+      ><div class="category-grid" *ngIf="!loading">
+        <a class="category-card" routerLink="/produits"
+          ><img src="/images/salon1.jpg" alt="Collection de salons" /><span
+            ><strong>Nos collections</strong><small>Découvrir</small></span
+          ></a
+        ><a class="category-card" routerLink="/produits"
+          ><img
+            src="/images/tables/726690118_1471857734979609_700362480694381330_n.jpg"
+            alt="Collection de tables"
+          /><span><strong>Tables</strong><small>Découvrir</small></span></a
+        >
+      </div></ng-template
+    >
+  </section>
+
+  <section class="section products-section">
+    <div class="container">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">SÉLECTION AMANSIA</p>
+          <h2>Nos pièces coup de cœur</h2>
+        </div>
+      </div>
+      <div
+        *ngIf="loading"
+        class="loading-grid"
+        aria-label="Chargement des produits"
+      >
+        <span *ngFor="let item of [1, 2, 3, 4]"></span>
+      </div>
+      <div class="product-grid" *ngIf="!loading && produits.length">
+        <article class="product-card" *ngFor="let produit of produits">
+          <button type="button" class="favorite-toggle" (click)="toggleFavori(produit, $event)"
+            [disabled]="favoris.isPending(produit.id)"
+            [attr.aria-label]="favoris.isFavorite(produit.id) ? 'Retirer des favoris' : 'Ajouter aux favoris'"
+            [attr.aria-pressed]="favoris.isFavorite(produit.id)">
+            {{ favoris.isFavorite(produit.id) ? '♥' : '♡' }}
+          </button>
+          <a [routerLink]="['/produits', produit.id]" class="product-image"
+            ><img appImageFallback [src]="productImage(produit.id)" [alt]="produit.nom" loading="lazy" /><span
+              *ngIf="produit.prixPromotion"
+              class="badge"
+              >Promotion</span
+            ></a
+          >
+          <div class="product-info">
+            <p>{{ produit.categorieNom }}</p>
+            <h3>
+              <a [routerLink]="['/produits', produit.id]">{{ produit.nom }}</a>
+            </h3>
+            <div class="price">
+              <strong>{{ produit.prixPromotion || produit.prix | tnd }}</strong
+              ><del *ngIf="produit.prixPromotion">{{ produit.prix | tnd }}</del>
+            </div>
+          </div>
+        </article>
+      </div>
+      <div *ngIf="!loading && !produits.length" class="empty-state">
+        La sélection arrive bientôt. Découvrez déjà nos univers.
+      </div>
+    </div>
+  </section>
+
+  <app-recently-viewed *ngIf="allProducts" [products]="allProducts" [images]="images"></app-recently-viewed>
+
+  <section class="benefits container">
+    <article>
+      <span>◇</span>
+      <div>
+        <strong>Qualité sélectionnée</strong>
+        <p>Des matières durables et des finitions soignées.</p>
+      </div>
+    </article>
+    <article>
+      <span>⌂</span>
+      <div>
+        <strong>Conseils personnalisés</strong>
+        <p>Une équipe à vos côtés pour trouver la pièce juste.</p>
+      </div>
+    </article>
+    <article>
+      <span>↻</span>
+      <div>
+        <strong>Achat serein</strong>
+        <p>Un parcours simple et un accompagnement attentif.</p>
+      </div>
+    </article>
+  </section>
+  <section class="home-cta container">
+    <div>
+      <p class="eyebrow">VOTRE PROJET, NOTRE PASSION</p>
+      <h2>Imaginez votre prochain intérieur.</h2>
+      <p>
+        Parcourez nos collections et trouvez les pièces qui feront de votre
+        maison un lieu unique.
+      </p>
+      <a class="button light" routerLink="/produits">Voir tous les produits</a>
+    </div>
+  </section>
+</main>

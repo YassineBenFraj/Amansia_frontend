@@ -1,0 +1,14 @@
+<main class="orders-page container">
+  <header><div><p class="eyebrow">VOTRE HISTORIQUE</p><h1>Mes commandes</h1><p class="muted">Suivez la préparation et la livraison de vos commandes.</p></div><button type="button" (click)="refresh()" [disabled]="loading">{{ loading ? 'Actualisation…' : 'Actualiser' }}</button></header>
+  <div *ngIf="loading && !orders.length" class="orders-loading" role="status">Chargement des commandes…</div>
+  <p *ngIf="error" class="error-banner" role="alert">{{ error }}</p>
+  <section *ngIf="orders.length" class="orders-list">
+    <article *ngFor="let order of orders">
+      <div class="order-top"><div><span class="order-number">{{ order.numeroCommande || '#' + order.id }}</span><h2>{{ order.dateCommande | date:'dd/MM/yyyy à HH:mm' }}</h2></div><strong>{{ order.total | tnd }}</strong></div>
+      <div class="order-meta"><span>Statut : <strong>{{ statusLabel(order.statut) }}</strong></span><span>Paiement : <strong>{{ paymentLabel(order) }}</strong></span></div>
+      <app-order-progress [status]="order.statut" [compact]="true"></app-order-progress>
+      <a [routerLink]="[order.id]">Voir le détail →</a>
+    </article>
+  </section>
+  <section *ngIf="!loading && !error && !orders.length" class="empty-state"><h2>Aucune commande</h2><p>Vos prochaines commandes apparaîtront ici.</p><a class="button primary" routerLink="/produits">Découvrir les produits</a></section>
+</main>

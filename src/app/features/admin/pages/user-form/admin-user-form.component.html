@@ -1,0 +1,15 @@
+<section class="admin-page form-page"><a class="back-link" routerLink="/admin/utilisateurs">← Utilisateurs</a>
+  <header><p class="eyebrow">{{id ? 'MODIFICATION' : 'CRÉATION'}}</p><h1>{{id ? 'Modifier l’utilisateur' : 'Nouvel utilisateur'}}</h1></header>
+  <div *ngIf="loading" class="loader"></div><p *ngIf="error" class="error-banner">{{error}}</p>
+  <form *ngIf="!loading" [formGroup]="form" (ngSubmit)="submit()" class="admin-form">
+    <label><span>Prénom *</span><input formControlName="prenom"></label>
+    <label><span>Nom *</span><input formControlName="nom"></label>
+    <label class="wide"><span>Email *</span><input type="email" formControlName="email"></label>
+    <label><span>Mot de passe {{id ? '(laisser vide pour conserver)' : '*'}}</span><input type="password" formControlName="motDePasse" autocomplete="new-password"><small *ngIf="form.controls.motDePasse.touched && form.controls.motDePasse.invalid">8 caractères minimum.</small></label>
+    <label><span>Téléphone</span><input formControlName="telephone"></label>
+    <label><span>Date de naissance</span><input type="date" formControlName="dateNaissance"></label>
+    <label><span>Rôle *</span><select formControlName="role"><option *ngFor="let role of roles" [value]="role">{{role}}</option></select></label>
+    <label class="checkbox"><input type="checkbox" formControlName="actif"><span>Compte actif</span></label>
+    <div class="actions wide"><a class="button secondary" routerLink="/admin/utilisateurs">Annuler</a><button class="button primary" type="submit" [disabled]="submitting">{{submitting ? 'Enregistrement…' : 'Enregistrer'}}</button></div>
+  </form>
+</section>

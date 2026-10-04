@@ -1,0 +1,44 @@
+<section class="admin-page">
+  <header class="page-heading">
+    <div>
+      <p class="eyebrow">VUE D’ENSEMBLE</p>
+      <h1>Dashboard</h1>
+      <p class="muted">Les indicateurs actuels de votre boutique.</p>
+    </div>
+  </header>
+  <div *ngIf="loading" class="loader"></div>
+  <p *ngIf="error" class="error-banner" role="alert">{{ error }}</p>
+  <div class="metrics" *ngIf="!loading">
+    <article>
+      <span>Produits</span><strong>{{ produits }}</strong
+      ><a routerLink="/admin/produits">Gérer</a>
+    </article>
+    <article>
+      <span>Catégories</span><strong>{{ categories }}</strong
+      ><a routerLink="/admin/categories">Gérer</a>
+    </article>
+    <article>
+      <span>Commandes</span><strong>{{ commandesCount }}</strong
+      ><a routerLink="/admin/commandes">Consulter</a>
+    </article>
+    <article>
+      <span>Utilisateurs</span><strong>{{ utilisateurs }}</strong
+      ><a routerLink="/admin/utilisateurs">Consulter</a>
+    </article>
+  </div>
+  <section class="recent" *ngIf="!loading">
+    <div class="section-heading">
+      <h2>Commandes récentes</h2>
+      <a routerLink="/admin/commandes">Toutes les commandes</a>
+    </div>
+    <div *ngIf="!recentOrders.length" class="empty">
+      Aucune commande disponible.
+    </div>
+    <div class="order-row" *ngFor="let order of recentOrders">
+      <strong>{{ order.numeroCommande || "#" + order.id }}</strong
+      ><span>{{ order.dateCommande | date: "dd/MM/yyyy HH:mm" }}</span
+      ><span>{{ order.statut }}</span
+      ><b>{{ order.total | tnd }}</b>
+    </div>
+  </section>
+</section>

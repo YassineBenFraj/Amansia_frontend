@@ -1,0 +1,122 @@
+<main class="product-detail container">
+  <a class="back-link product-back" routerLink="/produits"
+    >← Retour aux produits</a
+  >
+  <div *ngIf="loading" class="detail-loading"><span></span><span></span></div>
+  <div *ngIf="error && !loading" class="catalogue-message">
+    <h1>Produit indisponible</h1>
+    <p>{{ error }}</p>
+    <a class="button secondary" routerLink="/produits">Retour au catalogue</a>
+  </div>
+  <div class="detail-grid" *ngIf="produit as item">
+    <section class="product-gallery" aria-label="Images du produit">
+      <div class="main-product-image">
+        <img appImageFallback [src]="selectedImage" [alt]="item.nom" fetchpriority="high" />
+      </div>
+      <div class="thumbnails" *ngIf="images.length > 1">
+        <button
+          type="button"
+          *ngFor="let image of images"
+          (click)="selectImage(image)"
+          [class.active]="selectedImage === imageUrl(image)"
+        >
+          <img appImageFallback [src]="imageUrl(image)" alt="" loading="lazy" />
+        </button>
+      </div>
+    </section>
+    <section class="product-summary">
+      <p class="eyebrow">{{ item.categorieNom }}</p>
+      <h1>{{ item.nom }}</h1>
+      <p class="product-brand" *ngIf="item.marque">Par {{ item.marque }}</p>
+      <div class="detail-price">
+        <strong>{{ item.prixPromotion || item.prix | tnd }}</strong
+        ><del *ngIf="item.prixPromotion">{{ item.prix | tnd }}</del
+        ><span *ngIf="item.prixPromotion">Prix promotionnel</span>
+      </div>
+      <p class="product-description">
+        {{
+          item.description ||
+            "Une pièce Amansia pensée pour apporter élégance et confort à votre intérieur."
+        }}
+      </p>
+      <button type="button" class="favorite-detail" (click)="toggleFavori()"
+        [disabled]="favoris.isPending(item.id)" [attr.aria-pressed]="favoris.isFavorite(item.id)">
+        {{ favoris.isFavorite(item.id) ? '♥ Retirer des favoris' : '♡ Ajouter aux favoris' }}
+      </button>
+      <button type="button" class="compare-detail" [class.selected]="comparator.has(item.id)" [attr.aria-pressed]="comparator.has(item.id)" (click)="comparator.toggle(item)">{{ comparator.has(item.id) ? '✓ Dans le comparateur' : 'Comparer ce meuble' }}</button>
+      <div class="option-block" *ngIf="materiaux.length">
+        <span>Matériaux disponibles</span>
+        <div class="option-pills">
+          <span *ngFor="let material of materiaux">{{ material.nom }}</span>
+        </div>
+      </div>
+      <div class="option-block" *ngIf="couleurs.length">
+        <span>Couleurs disponibles</span>
+        <div class="color-pills">
+          <span *ngFor="let color of couleurs"
+            ><i [style.background-color]="color.codeHexadecimal || '#ddd'"></i
+            >{{ color.nom }}</span
+          >
+        </div>
+      </div>
+      <div class="variants" *ngIf="variantes.length">
+        <strong>Choisissez une variante</strong
+        ><button
+          type="button"
+          *ngFor="let variant of variantes"
+          [class.selected]="selectedVariantId === variant.id"
+          (click)="selectedVariantId = variant.id"
+        >
+          <span
+            >{{ materialName(variant.materiauId) }} ·
+            {{ colorName(variant.couleurId) }} · {{ stockQuantity(variant.id) === 0 ? 'Rupture de stock' : stockQuantity(variant.id) <= 3 ? 'Plus que ' + stockQuantity(variant.id) + ' disponibles' : 'En stock' }}</span
+          ><em *ngIf="variant.prixSupplementaire"
+            >+ {{ variant.prixSupplementaire | tnd }}</em
+          >
+        </button>
+      </div>
+      <p class="stock-message" *ngIf="selectedStock as stock" [class.out]="stock.quantite === 0" role="status">{{ stock.quantite === 0 ? 'Rupture de stock' : stock.quantite <= 3 ? 'Plus que ' + stock.quantite + ' disponibles' : 'En stock · ' + stock.quantite + ' disponibles' }}</p>
+      <p class="stock-message out" *ngIf="!variantes.length" role="status">Aucune variante disponible pour ce produit.</p>
+      <button
+        *ngIf="canAddToCart()"
+        type="button"
+        class="button primary add-cart"
+        (click)="addToCart()"
+        [disabled]="adding"
+        [attr.aria-busy]="adding"
+      >
+        {{ adding ? "Ajout en cours…" : "Ajouter au panier" }}
+        <span aria-hidden="true">＋</span>
+      </button>
+      <a *ngIf="isInCart()" class="button secondary add-cart" routerLink="/panier">Déjà dans le panier · Voir le panier</a>
+      <p *ngIf="cartError" class="error-banner" role="alert">{{ cartError }}</p>
+      <dl
+        class="product-specs"
+        *ngIf="item.largeur || item.hauteur || item.profondeur || item.poids"
+      >
+        <div *ngIf="item.largeur">
+          <dt>Largeur</dt>
+          <dd>{{ item.largeur }} cm</dd>
+        </div>
+        <div *ngIf="item.hauteur">
+          <dt>Hauteur</dt>
+          <dd>{{ item.hauteur }} cm</dd>
+        </div>
+        <div *ngIf="item.profondeur">
+          <dt>Profondeur</dt>
+          <dd>{{ item.profondeur }} cm</dd>
+        </div>
+        <div *ngIf="item.poids">
+          <dt>Poids</dt>
+          <dd>{{ item.poids }} kg</dd>
+        </div>
+      </dl>
+    </section>
+  </div>
+  <app-product-shelf *ngIf="produit" title="Vous aimerez aussi" eyebrow="DÉCOUVREZ AUSSI" [items]="similarItems" [loading]="similarLoading"></app-product-shelf>
+  <app-recently-viewed *ngIf="produit as item" [excludeId]="item.id"></app-recently-viewed>
+  <app-product-reviews
+    *ngIf="produit as item"
+    [productId]="item.id"
+  ></app-product-reviews>
+</main>

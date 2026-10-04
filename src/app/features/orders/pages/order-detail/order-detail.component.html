@@ -1,0 +1,86 @@
+<main class="order-detail-page container">
+  <a class="back-link" routerLink="/mes-commandes">← Mes commandes</a>
+  <div *ngIf="loading && !order" class="orders-loading" role="status">
+    Chargement de la commande…
+  </div>
+  <p *ngIf="error" class="error-banner" role="alert">{{ error }}</p>
+  <ng-container *ngIf="order as current">
+    <header class="detail-header">
+      <div>
+        <p class="eyebrow">{{ current.numeroCommande || "#" + current.id }}</p>
+        <h1>Détail de la commande</h1>
+        <p>Passée le {{ current.dateCommande | date: "dd/MM/yyyy à HH:mm" }}</p>
+      </div>
+      <button type="button" (click)="refresh()" [disabled]="loading">
+        {{ loading ? "Actualisation…" : "Actualiser" }}
+      </button>
+    </header>
+    <section class="detail-card">
+      <div class="section-heading">
+        <h2>Suivi de la commande</h2>
+        <span
+          class="status-chip"
+          [class.cancelled]="current.statut === 'ANNULEE'"
+          >{{ statusLabel(current.statut) }}</span
+        >
+      </div>
+      <app-order-progress [status]="current.statut"></app-order-progress>
+    </section>
+    <div class="detail-grid">
+      <section class="detail-card">
+        <h2>Livraison</h2>
+        <address *ngIf="current.adresseLivraison; else missingAddress">
+          {{ current.adresseLivraison }}<br />{{ current.codePostalLivraison }}
+          {{ current.villeLivraison }}<br />{{ current.paysLivraison }}
+        </address>
+        <ng-template #missingAddress
+          ><p>Adresse de livraison non disponible.</p></ng-template
+        >
+        <p *ngIf="current.commentaire" class="comment">
+          Commentaire : {{ current.commentaire }}
+        </p>
+      </section>
+      <section class="detail-card">
+        <h2>Paiement</h2>
+        <p>
+          Carte bancaire · <strong>{{ paymentLabel }}</strong>
+        </p>
+        <p *ngIf="payment?.datePaiement">
+          Payé le {{ payment?.datePaiement | date: "dd/MM/yyyy à HH:mm" }}
+        </p>
+      </section>
+    </div>
+    <section class="detail-card">
+      <h2>Produits commandés</h2>
+      <div class="order-lines">
+        <div *ngFor="let line of current.lignes" class="order-line">
+          <img
+            appImageFallback
+            [src]="image(line)"
+            [alt]="line.produitNom || 'Produit commandé'"
+            loading="lazy"
+          />
+          <div class="line-description">
+            <strong>{{
+              line.produitNom || "Produit #" + line.produitId
+            }}</strong
+            ><span *ngIf="line.varianteId">Variante #{{ line.varianteId }}</span
+            ><span
+              >Quantité : {{ line.quantite }} · Prix unitaire :
+              {{ line.prixUnitaire | tnd }}</span
+            >
+          </div>
+          <strong>{{ line.prixTotal | tnd }}</strong>
+        </div>
+      </div>
+      <div class="order-totals">
+        <div>
+          <span>Sous-total</span><strong>{{ current.sousTotal | tnd }}</strong>
+        </div>
+        <div class="grand-total">
+          <span>Total</span><strong>{{ current.total | tnd }}</strong>
+        </div>
+      </div>
+    </section>
+  </ng-container>
+</main>

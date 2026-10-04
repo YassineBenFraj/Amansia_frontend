@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Image du meuble indisponible">
+  <rect width="800" height="600" fill="#eeece6"/>
+  <path d="M225 365h350v72H225zM245 270c0-24 18-43 42-43h226c24 0 42 19 42 43v95H245z" fill="none" stroke="#a8afa5" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M230 437v43m340-43v43M225 322h-20c-18 0-30 14-30 32v81h450v-81c0-18-12-32-30-32h-20" fill="none" stroke="#a8afa5" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="400" y="535" fill="#778178" font-family="Arial,sans-serif" font-size="20" text-anchor="middle">Image indisponible</text>
+</svg>

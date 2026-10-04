@@ -1,0 +1,57 @@
+<section class="admin-page form-page">
+  <button class="back" type="button" (click)="back()">
+    ← Retour aux catégories
+  </button>
+  <header>
+    <p class="eyebrow">
+      {{ editing ? "DÉTAIL CATÉGORIE" : "NOUVELLE CATÉGORIE" }}
+    </p>
+    <h1>{{ editing ? category?.nom : "Ajouter une catégorie" }}</h1>
+  </header>
+  <div *ngIf="loading" class="loader"></div>
+  <p *ngIf="error" class="error-banner" role="alert">{{ error }}</p>
+  <p *ngIf="message" class="notice" role="status">{{ message }}</p>
+  <form
+    *ngIf="!loading && (!editing || category)"
+    [formGroup]="form"
+    (ngSubmit)="submit()"
+    class="admin-form"
+  >
+    <label for="name">Nom</label><input id="name" formControlName="nom" /><small
+      class="field-error"
+      *ngIf="form.controls.nom.invalid && form.controls.nom.touched"
+      >Le nom est obligatoire.</small
+    ><label for="description">Description</label
+    ><textarea
+      id="description"
+      formControlName="description"
+      rows="6"
+    ></textarea
+    ><label for="image">Image de la catégorie</label
+    ><input
+      id="image"
+      type="file"
+      accept="image/jpeg,image/png,image/webp"
+      (change)="chooseFile($event)"
+    /><small class="file-help">JPEG, PNG ou WebP, 5 MB maximum.</small
+    ><img
+      *ngIf="category?.image"
+      class="category-preview"
+      [src]="imageUrl()"
+      alt="Image actuelle de la catégorie"
+    />
+    <div class="form-actions">
+      <button class="button primary" type="submit" [disabled]="saving">
+        {{
+          saving
+            ? "Enregistrement…"
+            : editing
+              ? "Enregistrer les changements"
+              : "Créer la catégorie"
+        }}</button
+      ><button class="button secondary" type="button" (click)="back()">
+        Annuler
+      </button>
+    </div>
+  </form>
+</section>

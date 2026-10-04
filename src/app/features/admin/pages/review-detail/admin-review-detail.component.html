@@ -1,0 +1,9 @@
+<section class="admin-page"><a class="back-link" routerLink="/admin/avis">← Avis</a>
+  <div *ngIf="loading" class="loader"></div><p *ngIf="error" class="error-banner">{{error}}</p><p *ngIf="message" class="notice">{{message}}</p>
+  <ng-container *ngIf="review">
+    <header><div><p class="eyebrow">AVIS #{{review.id}}</p><h1>{{review.produitNom || 'Produit #'+review.produitId}}</h1><span class="status" [class.pending]="!review.approuve">{{review.approuve ? 'APPROUVÉ' : 'MASQUÉ'}}</span></div>
+      <div class="actions"><button *ngIf="!review.approuve" class="button primary" [disabled]="updating" (click)="moderate(true)">Approuver</button><button *ngIf="review.approuve" class="button secondary" [disabled]="updating" (click)="moderate(false)">Masquer</button><button class="button danger" [disabled]="updating" (click)="remove()">Supprimer</button></div>
+    </header>
+    <article class="review"><p class="rating">{{review.note}} / 5</p><blockquote>{{review.commentaire || 'Aucun commentaire.'}}</blockquote><dl><div><dt>Client</dt><dd>{{review.utilisateurNom || 'Client #'+review.utilisateurId}}</dd></div><div><dt>Produit</dt><dd>{{review.produitNom || '#'+review.produitId}}</dd></div><div><dt>Commande</dt><dd>#{{review.commandeId}}</dd></div><div><dt>Date</dt><dd>{{review.dateCreation | date:'dd/MM/yyyy HH:mm'}}</dd></div></dl></article>
+  </ng-container>
+</section>

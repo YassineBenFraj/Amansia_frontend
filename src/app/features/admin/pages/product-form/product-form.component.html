@@ -1,0 +1,132 @@
+<section class="admin-page form-page">
+  <button class="back" type="button" (click)="back()">
+    ← Retour aux produits
+  </button>
+  <header>
+    <p class="eyebrow">{{ editing ? "DÉTAIL PRODUIT" : "NOUVEAU PRODUIT" }}</p>
+    <h1>{{ editing ? product?.nom : "Ajouter un produit" }}</h1>
+  </header>
+  <div *ngIf="loading" class="loader"></div>
+  <p *ngIf="error" class="error-banner" role="alert">{{ error }}</p>
+  <p *ngIf="message" class="notice" role="status">{{ message }}</p>
+  <form
+    *ngIf="!loading && (!editing || product)"
+    [formGroup]="form"
+    (ngSubmit)="submit()"
+    class="admin-form"
+  >
+    <label for="name">Nom</label><input id="name" formControlName="nom" /><small
+      class="field-error"
+      *ngIf="form.controls.nom.invalid && form.controls.nom.touched"
+      >Le nom est obligatoire.</small
+    ><label for="category">Catégorie</label
+    ><select id="category" formControlName="categorieId">
+      <option [ngValue]="0">Choisir une catégorie</option>
+      <option *ngFor="let category of categories" [ngValue]="category.id">
+        {{ category.nom }}
+      </option></select
+    ><label for="description">Description</label
+    ><textarea
+      id="description"
+      rows="5"
+      formControlName="description"
+    ></textarea>
+    <div class="form-grid">
+      <div>
+        <label for="price">Prix (TND)</label
+        ><input id="price" type="number" step="0.001" formControlName="prix" />
+      </div>
+      <div>
+        <label for="promotion">Prix promotionnel</label
+        ><input
+          id="promotion"
+          type="number"
+          step="0.001"
+          formControlName="prixPromotion"
+        />
+      </div>
+      <div>
+        <label for="brand">Marque</label
+        ><input id="brand" formControlName="marque" />
+      </div>
+      <div>
+        <label for="width">Largeur (cm)</label
+        ><input
+          id="width"
+          type="number"
+          step="0.01"
+          formControlName="largeur"
+        />
+      </div>
+      <div>
+        <label for="height">Hauteur (cm)</label
+        ><input
+          id="height"
+          type="number"
+          step="0.01"
+          formControlName="hauteur"
+        />
+      </div>
+      <div>
+        <label for="depth">Profondeur (cm)</label
+        ><input
+          id="depth"
+          type="number"
+          step="0.01"
+          formControlName="profondeur"
+        />
+      </div>
+      <div>
+        <label for="weight">Poids (kg)</label
+        ><input id="weight" type="number" step="0.01" formControlName="poids" />
+      </div>
+    </div>
+    <label class="check"
+      ><input type="checkbox" formControlName="personnalisable" /> Produit
+      personnalisable</label
+    >
+    <div class="form-actions">
+      <button class="button primary" type="submit" [disabled]="saving">
+        {{
+          saving
+            ? "Enregistrement…"
+            : editing
+              ? "Enregistrer les changements"
+              : "Créer le produit"
+        }}</button
+      ><button class="button secondary" type="button" (click)="back()">
+        Annuler
+      </button>
+    </div>
+    <section class="images-box" *ngIf="editing && product">
+      <h2>Images du produit</h2>
+      <input
+        #imageInput
+        type="file"
+        accept="image/*"
+        (change)="upload(imageInput)"
+        [disabled]="uploading"
+      /><small>{{
+        uploading ? "Téléversement…" : "Ajoutez une image JPG, PNG ou WebP."
+      }}</small>
+      <div class="image-list">
+        <figure *ngFor="let image of images">
+          <img [src]="imageUrl(image)" alt="" />
+          <figcaption>
+            <button
+              type="button"
+              (click)="setMainImage(image)"
+              [disabled]="image.principale"
+            >
+              {{
+                image.principale ? "Principale" : "Définir principale"
+              }}</button
+            ><button type="button" class="danger" (click)="deleteImage(image)">
+              Supprimer
+            </button>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+  </form>
+</section>

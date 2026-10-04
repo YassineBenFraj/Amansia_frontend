@@ -1,0 +1,6 @@
+<section class="admin-page"><a class="back-link" routerLink="/admin/utilisateurs">← Utilisateurs</a>
+  <div *ngIf="loading" class="loader"></div><p *ngIf="error" class="error-banner">{{error}}</p>
+  <ng-container *ngIf="user"><header><div><p class="eyebrow">UTILISATEUR #{{user.id}}</p><h1>{{user.prenom}} {{user.nom}}</h1><span class="status" [class.inactive]="!user.actif">{{user.actif ? 'ACTIF' : 'INACTIF'}}</span></div><a class="button primary" [routerLink]="['/admin/utilisateurs',user.id,'modifier']">Modifier</a></header>
+    <article class="details"><div><span>Email</span><strong>{{user.email}}</strong></div><div><span>Rôle</span><strong>{{user.role}}</strong></div><div><span>Téléphone</span><strong>{{user.telephone || 'Non renseigné'}}</strong></div><div><span>Date de naissance</span><strong>{{(user.dateNaissance | date:'dd/MM/yyyy') || 'Non renseignée'}}</strong></div><div><span>Création</span><strong>{{user.dateCreation | date:'dd/MM/yyyy HH:mm'}}</strong></div><div><span>Dernière modification</span><strong>{{(user.dateModification | date:'dd/MM/yyyy HH:mm') || '—'}}</strong></div></article>
+  </ng-container>
+</section>

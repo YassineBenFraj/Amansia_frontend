@@ -1,0 +1,25 @@
+<main class="checkout-page container">
+  <header class="checkout-heading"><p class="eyebrow">DERNIÈRE ÉTAPE</p><h1>Finaliser ma commande</h1><p class="muted">Choisissez votre adresse de livraison et vérifiez votre sélection.</p></header>
+  <p *ngIf="error" class="error-banner" role="alert">{{ error }} <a *ngIf="!cart?.lignes?.length" routerLink="/panier">Retour au panier</a></p>
+  <div *ngIf="loading" class="checkout-loading"></div>
+  <div class="checkout-layout" *ngIf="!loading && cart?.lignes?.length">
+    <section>
+      <div class="checkout-step">
+        <div class="step-heading"><h2>1. Adresse de livraison</h2><a routerLink="/adresses" [queryParams]="{ returnUrl: '/checkout' }">Gérer mes adresses</a></div>
+        <div class="checkout-addresses" *ngIf="addresses.length; else noAddress">
+          <button type="button" *ngFor="let address of addresses" [class.selected]="selectedAddressId === address.id" (click)="selectAddress(address)">
+            <span class="radio"></span><span><strong>{{ address.adresse }}</strong><small>{{ address.codePostal }} {{ address.ville }}<ng-container *ngIf="address.pays"> · {{ address.pays }}</ng-container></small></span>
+          </button>
+        </div>
+        <ng-template #noAddress><div class="no-address"><p>Vous n’avez encore aucune adresse de livraison.</p><a class="button secondary" routerLink="/adresses" [queryParams]="{ returnUrl: '/checkout' }">Ajouter une adresse</a></div></ng-template>
+      </div>
+      <div class="checkout-step"><h2>2. Paiement sécurisé en ligne</h2><p>Le paiement par carte est confirmé par Stripe avant la création de votre commande.</p></div><div class="checkout-step"><h2>3. Commentaire <span>(facultatif)</span></h2><textarea [formControl]="form.controls.commentaire" rows="3" placeholder="Une précision pour votre livraison ?"></textarea></div>
+    </section>
+    <aside class="checkout-summary">
+      <h2>Votre commande</h2><div class="checkout-lines"><div *ngFor="let line of cart?.lignes"><span>{{ line.quantite }} × {{ line.produit.nom }}</span><strong>{{ line.prixTotal | tnd }}</strong></div></div>
+      <div class="checkout-total"><span>Total</span><strong>{{ cart?.totalGeneral | tnd }}</strong></div>
+      <button class="button primary" type="button" (click)="submit()" [disabled]="submitting || !cart?.lignes?.length || !selectedAddressId" [attr.aria-busy]="submitting">{{ submitting ? 'Traitement en cours…' : 'Continuer vers le paiement' }} <span>→</span></button>
+      <small>Le montant est confirmé par Amansia.</small>
+    </aside>
+  </div><app-stripe-payment-modal [open]="paymentModalOpen" [clientSecret]="clientSecret" [publishableKey]="publishableKey" (closed)="paymentClosed()" (completed)="paymentCompleted($event)"></app-stripe-payment-modal>
+</main>

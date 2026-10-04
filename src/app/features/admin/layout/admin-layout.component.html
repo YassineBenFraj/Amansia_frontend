@@ -1,0 +1,82 @@
+<div class="admin-shell">
+  <button
+    class="menu-toggle"
+    type="button"
+    (click)="toggleMenu()"
+    aria-label="Ouvrir le menu"
+  >
+    ☰
+  </button>
+  <aside class="admin-sidebar" [class.open]="menuOpen">
+    <a class="admin-brand" routerLink="/admin/dashboard" (click)="closeMenu()"
+      ><span>AMANSIA</span><small>Administration</small></a
+    >
+    <nav aria-label="Navigation administrateur">
+      <a
+        routerLink="/admin/dashboard"
+        routerLinkActive="active"
+        (click)="closeMenu()"
+        >Dashboard</a
+      >
+      <a
+        routerLink="/admin/utilisateurs"
+        routerLinkActive="active"
+        (click)="closeMenu()"
+        >Utilisateurs</a
+      >
+      <a
+        routerLink="/admin/categories"
+        routerLinkActive="active"
+        (click)="closeMenu()"
+        >Catégories</a
+      >
+      <a
+        routerLink="/admin/produits"
+        routerLinkActive="active"
+        (click)="closeMenu()"
+        >Produits</a
+      >
+      <a
+        routerLink="/admin/commandes"
+        routerLinkActive="active"
+        (click)="closeMenu()"
+        >Commandes</a
+      >
+      <a routerLink="/admin/stocks" routerLinkActive="active" (click)="closeMenu()">Stocks</a>
+      <a
+        routerLink="/admin/paiements"
+        routerLinkActive="active"
+        (click)="closeMenu()"
+        >Paiements</a
+      >
+      <a
+        routerLink="/admin/avis"
+        routerLinkActive="active"
+        (click)="closeMenu()"
+        >Avis</a
+      >
+    </nav>
+    <div class="admin-sidebar-footer">
+      <div class="profile-menu">
+        <button
+          class="profile-trigger"
+          type="button"
+          (click)="toggleProfile()"
+          [attr.aria-expanded]="profileOpen"
+          aria-label="Menu du profil"
+        >
+          <span class="profile-icon" aria-hidden="true"></span
+          ><span class="profile-name">{{ userName }}</span
+          ><span aria-hidden="true">⌄</span>
+        </button>
+        <div class="profile-dropdown" *ngIf="profileOpen">
+          <a routerLink="/mon-compte" (click)="closeProfile()">Profil</a
+          ><button type="button" (click)="logout()">Déconnexion</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <main class="admin-main">
+    <router-outlet></router-outlet>
+  </main>
+</div>

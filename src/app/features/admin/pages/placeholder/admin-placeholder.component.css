@@ -1,0 +1,12 @@
+.placeholder {
+  max-width: 650px;
+  padding: 40px;
+  background: #fff;
+  border: 1px solid var(--line);
+}
+.placeholder h1 {
+  margin: 10px 0;
+}
+.placeholder p:last-child {
+  color: var(--muted);
+}

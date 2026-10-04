@@ -1,0 +1,137 @@
+.form-page {
+  max-width: 920px;
+}
+.back {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: var(--accent);
+  cursor: pointer;
+  font-size: 0.78rem;
+}
+.form-page header {
+  margin: 25px 0;
+}
+.form-page h1 {
+  margin: 9px 0;
+}
+.admin-form {
+  background: #fff;
+  border: 1px solid var(--line);
+  padding: 28px;
+}
+.admin-form label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin: 16px 0 7px;
+}
+.admin-form input,
+.admin-form select,
+.admin-form textarea {
+  width: 100%;
+  padding: 11px;
+  border: 1px solid var(--line);
+  background: #fcfcfa;
+}
+.admin-form textarea {
+  resize: vertical;
+}
+.admin-form input:focus,
+.admin-form select:focus,
+.admin-form textarea:focus {
+  outline: 2px solid #dfe9dc;
+  border-color: var(--accent);
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0 15px;
+}
+.check {
+  display: flex !important;
+  gap: 8px;
+  align-items: center;
+}
+.check input {
+  width: auto;
+}
+.field-error {
+  display: block;
+  color: #9b443a;
+  font-size: 0.72rem;
+}
+.form-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 22px;
+}
+.form-actions .button {
+  min-height: 44px;
+}
+.loader {
+  height: 150px;
+  background: #e8ebe4;
+}
+.images-box {
+  border-top: 1px solid var(--line);
+  margin-top: 28px;
+  padding-top: 22px;
+}
+.images-box h2 {
+  font-size: 1.2rem;
+  margin: 0 0 12px;
+}
+.images-box > small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.7rem;
+  margin-top: 6px;
+}
+.image-list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 16px;
+}
+.image-list figure {
+  margin: 0;
+  background: #f3f4f0;
+  border: 1px solid var(--line);
+}
+.image-list img {
+  width: 100%;
+  height: 110px;
+  display: block;
+  object-fit: cover;
+}
+.image-list figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+  padding: 8px;
+  font-size: 0.65rem;
+}
+.image-list button {
+  border: 0;
+  background: none;
+  color: var(--accent);
+  cursor: pointer;
+  padding: 0;
+}
+.image-list button:disabled {
+  color: #48704c;
+  cursor: default;
+}
+.image-list .danger {
+  color: #9b443a;
+}
+@media (max-width: 650px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .image-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

@@ -1,0 +1,25 @@
+<main class="session-shell">
+  <a class="brand" routerLink="/">amansia<span>.</span></a>
+  <section class="session-card">
+    <ng-container *ngIf="page === 'forbidden'; else content">
+      <p class="eyebrow">ACCÈS LIMITÉ</p><h1>Cet espace est réservé.</h1><p class="muted">Votre compte ne dispose pas des autorisations nécessaires pour consulter cette page.</p><a class="button primary" routerLink="/">Revenir à l’accueil</a>
+    </ng-container>
+    <ng-template #content>
+      <ng-container *ngIf="auth.user$ | async as user; else visitor">
+        <p class="eyebrow">{{ page === 'admin' ? 'ESPACE ADMINISTRATEUR' : page === 'cart' ? 'VOTRE PANIER' : 'VOTRE ESPACE PERSONNEL' }}</p>
+        <h1>Bonjour, {{ user.prenom }}.</h1>
+        <p class="muted">{{ page === 'admin' ? 'Votre accès administrateur est actif. Les outils de gestion seront disponibles prochainement.' : page === 'cart' ? 'Le panier sera développé lors de la prochaine étape.' : 'Bienvenue dans votre espace Amansia. Votre compte est prêt.' }}</p>
+        <dl class="profile"><div><dt>Email</dt><dd>{{ user.email }}</dd></div><div><dt>Compte</dt><dd>{{ roleLabels[user.role] }}</dd></div><div><dt>Statut</dt><dd><span class="status-dot" aria-hidden="true"></span> Actif</dd></div></dl>
+        <div class="actions"><a *ngIf="page === 'home'" class="button primary" routerLink="/mon-compte">Mon compte</a><button type="button" class="button secondary" (click)="refresh()" [disabled]="loading">{{ loading ? 'Actualisation…' : 'Actualiser mon compte' }}</button><a *ngIf="auth.hasRole(adminRole) && page !== 'admin'" class="button secondary" routerLink="/admin">Administration</a><button type="button" class="text-button" (click)="auth.logout()">Se déconnecter</button></div>
+        <p *ngIf="message" class="notice" role="status">{{ message }}</p><p *ngIf="error" class="error-banner" role="alert">{{ error }}</p>
+      </ng-container>
+      <ng-template #visitor>
+        <p class="eyebrow">BIENVENUE CHEZ AMANSIA</p><h1>Votre intérieur.<br>Votre histoire.</h1><p class="muted">Un espace à vous, pour commencer.<br>Connectez-vous ou créez votre compte Amansia.</p>
+        <p *ngIf="auth.sessionError" class="error-banner" role="alert">{{ auth.sessionError }}</p>
+        <div class="actions"><a class="button primary" routerLink="/auth/register">Créer mon compte <span aria-hidden="true">→</span></a><a class="button secondary" routerLink="/auth/login">Se connecter</a><button *ngIf="auth.getToken()" type="button" class="text-button" [disabled]="loading" (click)="refresh()">Réessayer la connexion</button></div>
+        <p *ngIf="error" class="error-banner" role="alert">{{ error }}</p>
+      </ng-template>
+    </ng-template>
+  </section>
+  <p class="session-foot">Amansia — un nouvel espace se prépare.</p>
+</main>

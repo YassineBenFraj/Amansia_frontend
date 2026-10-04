@@ -1,0 +1,44 @@
+<main class="compare-page">
+  <div class="compare-heading">
+    <div><p class="eyebrow">Votre sélection</p><h1>Comparer les meubles</h1><p>Comparez jusqu'à trois meubles et choisissez celui qui vous convient.</p></div>
+    <button *ngIf="comparator.count$ | async as count" type="button" class="clear-button" (click)="comparator.clear()">Vider le comparateur</button>
+  </div>
+
+  <div *ngIf="loading" class="compare-loading" role="status">Chargement de la comparaison…</div>
+
+  <section *ngIf="!loading && !columns.length" class="compare-empty">
+    <h2>{{ comparator.ids.length ? 'Comparaison indisponible' : 'Aucun produit à comparer' }}</h2>
+    <p>{{ comparator.ids.length ? 'Impossible de charger les produits pour le moment.' : 'Ajoutez des meubles depuis le catalogue pour voir leurs différences ici.' }}</p>
+    <a routerLink="/produits" class="button primary">Découvrir les produits</a>
+  </section>
+
+  <section *ngIf="!loading && columns.length" aria-label="Tableau de comparaison">
+    <div class="compare-scroll">
+      <table class="compare-table">
+        <thead><tr><th scope="col">Caractéristique</th><th scope="col" *ngFor="let column of columns; trackBy: trackById">
+          <div class="product-head">
+            <img appImageFallback [src]="image(column)" [alt]="column.item.produit.nom" loading="lazy">
+            <span class="category">{{ column.item.produit.categorieNom }}</span>
+            <strong>{{ column.item.produit.nom }}</strong>
+            <div class="product-actions"><a [routerLink]="['/produits', column.item.produit.id]">Voir le détail</a><button type="button" (click)="comparator.remove(column.item.produit.id)" [attr.aria-label]="'Retirer ' + column.item.produit.nom">Retirer</button></div>
+          </div>
+        </th></tr></thead>
+        <tbody>
+          <tr [class.different]="different('prix')"><th scope="row">Prix normal</th><td *ngFor="let column of columns; trackBy: trackById">{{ column.item.produit.prix | tnd }}</td></tr>
+          <tr [class.different]="different('prixPromotion')"><th scope="row">Prix promotionnel</th><td *ngFor="let column of columns; trackBy: trackById">{{ column.item.produit.prixPromotion != null ? (column.item.produit.prixPromotion | tnd) : '—' }}</td></tr>
+          <tr [class.different]="different('dimensions')"><th scope="row">Dimensions (L × H × P)</th><td *ngFor="let column of columns; trackBy: trackById">{{ dimensions(column) }}</td></tr>
+          <tr [class.different]="different('materials')"><th scope="row">Matériaux</th><td *ngFor="let column of columns; trackBy: trackById">{{ materials(column) }}</td></tr>
+          <tr [class.different]="different('colors')"><th scope="row">Couleurs</th><td *ngFor="let column of columns; trackBy: trackById">{{ colors(column) }}</td></tr>
+          <tr [class.different]="different('availability')"><th scope="row">Disponibilité</th><td *ngFor="let column of columns; trackBy: trackById"><strong [class.out-of-stock]="availability(column) === 'Rupture de stock'">{{ availability(column) }}</strong><small *ngIf="availableVariants(column)">{{ availableVariants(column) }}</small></td></tr>
+          <tr><th scope="row">Variantes</th><td *ngFor="let column of columns; trackBy: trackById">
+            <span *ngIf="column.stocks === null">Données momentanément indisponibles</span>
+            <span *ngIf="column.stocks?.length === 0">Aucune variante disponible</span>
+            <ul *ngIf="column.stocks?.length" class="variant-list"><li *ngFor="let stock of column.stocks"><span>{{ stock.couleur || 'Couleur standard' }} · {{ stock.materiau || 'Matériau standard' }} <small>{{ stock.reference }}</small></span><span [class.out-of-stock]="stock.quantite < 1">{{ stockLabel(stock) }}</span></li></ul>
+            <a *ngIf="column.stocks?.length" class="choose-variant" [routerLink]="['/produits', column.item.produit.id]">Choisir une variante</a>
+          </td></tr>
+        </tbody>
+      </table>
+    </div>
+    <a routerLink="/produits" class="back-link">← Retour au catalogue</a>
+  </section>
+</main>

@@ -1,0 +1,48 @@
+<section class="admin-page">
+  <header class="page-heading">
+    <div>
+      <p class="eyebrow">CATALOGUE</p>
+      <h1>Produits</h1>
+      <p class="muted">Consultez et administrez les produits de la boutique.</p>
+    </div>
+    <button class="button primary" type="button" (click)="create()">
+      Ajouter un produit
+    </button>
+  </header>
+  <input
+    class="search"
+    [(ngModel)]="search"
+    [ngModelOptions]="{ standalone: true }"
+    placeholder="Rechercher par nom, marque ou catégorie"
+  />
+  <p *ngIf="error" class="error-banner" role="alert">{{ error }}</p>
+  <p *ngIf="message" class="notice" role="status">{{ message }}</p>
+  <div *ngIf="loading" class="loader"></div>
+  <div class="data-panel" *ngIf="!loading">
+    <div *ngIf="!filteredProducts.length" class="empty">
+      Aucun produit trouvé.
+    </div>
+    <article class="data-row" *ngFor="let product of filteredProducts">
+      <div>
+        <strong>{{ product.nom }}</strong
+        ><span>{{ product.categorieNom }} · {{ product.prix | tnd }}</span>
+      </div>
+      <span class="status" [class.off]="!product.actif">{{
+        product.actif ? "Actif" : "Inactif"
+      }}</span>
+      <div class="row-actions">
+        <button type="button" (click)="edit(product)">Détail / modifier</button
+        ><button type="button" (click)="toggle(product)">
+          {{ product.actif ? "Désactiver" : "Activer" }}</button
+        ><button
+          *ngIf="product.actif"
+          type="button"
+          class="danger"
+          (click)="remove(product)"
+        >
+          Supprimer
+        </button>
+      </div>
+    </article>
+  </div>
+</section>

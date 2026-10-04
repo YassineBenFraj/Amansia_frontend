@@ -1,0 +1,40 @@
+<section class="admin-page">
+  <header class="page-heading">
+    <div>
+      <p class="eyebrow">CATALOGUE</p>
+      <h1>Catégories</h1>
+      <p class="muted">Consultez et administrez les familles de produits.</p>
+    </div>
+    <button class="button primary" type="button" (click)="create()">
+      Ajouter une catégorie
+    </button>
+  </header>
+  <p *ngIf="error" class="error-banner" role="alert">{{ error }}</p>
+  <p *ngIf="message" class="notice" role="status">{{ message }}</p>
+  <div *ngIf="loading" class="loader"></div>
+  <div class="data-panel" *ngIf="!loading">
+    <div *ngIf="!categories.length" class="empty">Aucune catégorie.</div>
+    <article class="data-row" *ngFor="let category of categories">
+      <div>
+        <strong>{{ category.nom }}</strong
+        ><span>{{ category.description || "Sans description" }}</span>
+      </div>
+      <span class="status" [class.off]="!category.actif">{{
+        category.actif ? "Active" : "Inactive"
+      }}</span>
+      <div class="row-actions">
+        <button type="button" (click)="edit(category)">Détail / modifier</button
+        ><button type="button" (click)="toggle(category)">
+          {{ category.actif ? "Désactiver" : "Activer" }}</button
+        ><button
+          *ngIf="category.actif"
+          type="button"
+          class="danger"
+          (click)="remove(category)"
+        >
+          Supprimer
+        </button>
+      </div>
+    </article>
+  </div>
+</section>

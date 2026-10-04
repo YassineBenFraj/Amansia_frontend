@@ -1,0 +1,82 @@
+<section class="admin-page">
+  <header>
+    <div>
+      <p class="eyebrow">COMPTES</p>
+      <h1>Utilisateurs</h1>
+      <p class="muted">Consultez et gérez les comptes.</p>
+    </div>
+    <button class="button primary" (click)="create()">
+      Ajouter un utilisateur
+    </button>
+  </header>
+  <div class="filters">
+    <input
+      [(ngModel)]="search"
+      placeholder="Nom, email ou identifiant"
+      aria-label="Rechercher un utilisateur"
+    />
+    <select [(ngModel)]="role" aria-label="Filtrer par rôle">
+      <option value="">Tous les rôles</option>
+      <option *ngFor="let value of roles" [value]="value">{{ value }}</option>
+    </select>
+    <select [(ngModel)]="status" aria-label="Filtrer par statut">
+      <option value="">Tous les statuts</option>
+      <option value="true">Actifs</option>
+      <option value="false">Inactifs</option>
+    </select>
+  </div>
+  <p *ngIf="error" class="error-banner">{{ error }}</p>
+  <p *ngIf="message" class="notice">{{ message }}</p>
+  <div *ngIf="loading" class="loader"></div>
+  <div class="table-wrap" *ngIf="!loading">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Utilisateur</th>
+          <th>Email</th>
+          <th>Rôle</th>
+          <th>Statut</th>
+          <th>Création</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of filtered">
+          <td>#{{ user.id }}</td>
+          <td>
+            <strong>{{ user.prenom }} {{ user.nom }}</strong>
+          </td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.role }}</td>
+          <td>
+            <span class="status" [class.inactive]="!user.actif">{{
+              user.actif ? "ACTIF" : "INACTIF"
+            }}</span>
+          </td>
+          <td>{{ user.dateCreation | date: "dd/MM/yyyy" }}</td>
+          <td class="actions">
+            <button (click)="open(user)">Voir</button
+            ><button (click)="edit(user)">Modifier</button
+            ><button
+              (click)="toggle(user)"
+              [disabled]="
+                updatingId === user.id ||
+                (user.id === currentUserId && user.actif)
+              "
+            >
+              {{ user.actif ? "Désactiver" : "Activer" }}</button
+            ><button
+              class="danger"
+              (click)="remove(user)"
+              [disabled]="updatingId === user.id || user.id === currentUserId"
+            >
+              Supprimer
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="empty" *ngIf="!filtered.length">Aucun utilisateur trouvé.</p>
+  </div>
+</section>

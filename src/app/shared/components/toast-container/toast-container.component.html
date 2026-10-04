@@ -1,0 +1,7 @@
+<div class="toast-stack" aria-live="polite" aria-relevant="additions">
+  <div class="toast" *ngFor="let item of toast.toasts$ | async" [class.error]="item.type === 'error'" [class.info]="item.type === 'info'" [attr.role]="item.type === 'error' ? 'alert' : 'status'">
+    <span class="toast-symbol" aria-hidden="true">{{ item.type === 'success' ? '✓' : item.type === 'error' ? '!' : 'i' }}</span>
+    <span>{{ item.message }}</span>
+    <button type="button" (click)="toast.dismiss(item.id)" aria-label="Fermer la notification">×</button>
+  </div>
+</div>

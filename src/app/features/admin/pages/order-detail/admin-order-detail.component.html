@@ -1,0 +1,82 @@
+<section class="admin-page">
+  <a class="back" routerLink="/admin/commandes">← Commandes</a>
+  <div *ngIf="loading" class="loader"></div>
+  <p *ngIf="error" class="error-banner">{{ error }}</p>
+  <ng-container *ngIf="!loading && order"
+    ><header>
+      <div>
+        <p class="eyebrow">COMMANDE #{{ order.id }}</p>
+        <h1>{{ order.numeroCommande }}</h1>
+        <p class="muted">
+          {{ order.dateCommande | date: "dd/MM/yyyy à HH:mm" }}
+        </p>
+      </div>
+      <div class="workflow">
+        <span>{{ order.statut }}</span
+        ><button
+          class="button primary"
+          *ngIf="nextStatus"
+          [disabled]="updating"
+          (click)="advance()"
+        >
+          {{ updating ? "Mise à jour…" : "Passer à " + nextStatus }}
+        </button>
+      </div>
+    </header>
+    <p *ngIf="message" class="notice">{{ message }}</p>
+    <div class="detail-grid">
+      <article>
+        <h2>Client</h2>
+        <p>
+          <strong>{{
+            order.clientNom || "Client #" + order.utilisateurId
+          }}</strong
+          ><br />{{ order.clientEmail }}<br />{{ order.clientTelephone }}
+        </p>
+      </article>
+      <article>
+        <h2>Livraison</h2>
+        <p>
+          {{ order.adresseLivraison || "Adresse #" + order.adresseLivraisonId
+          }}<br />{{ order.codePostalLivraison }} {{ order.villeLivraison
+          }}<br />{{ order.paysLivraison }}
+        </p>
+      </article>
+      <article>
+        <h2>Informations</h2>
+        <p>
+          Statut : <strong>{{ order.statut }}</strong>
+        </p>
+        <p *ngIf="order.commentaire">Commentaire : {{ order.commentaire }}</p>
+      </article>
+    </div>
+    <article class="panel">
+      <h2>Articles</h2>
+      <div class="line" *ngFor="let line of order.lignes">
+        <span
+          ><strong>{{ line.produitNom || "Produit #" + line.produitId }}</strong
+          ><small *ngIf="line.varianteId"
+            >Variante #{{ line.varianteId }}</small
+          ></span
+        ><span>{{ line.quantite }} × {{ line.prixUnitaire | tnd }}</span
+        ><strong>{{ line.prixTotal | tnd }}</strong>
+      </div>
+      <div class="totals">
+        <p>
+          <span>Total</span><strong>{{ order.total | tnd }}</strong>
+        </p>
+      </div>
+    </article>
+    <article class="panel">
+      <h2>Paiements associés</h2>
+      <div class="line" *ngFor="let p of payments">
+        <span
+          ><strong>#{{ p.id }} · {{ p.methode }}</strong
+          ><small>{{ p.reference }}</small></span
+        ><span>{{ p.statut }}</span
+        ><strong>{{ p.montant | tnd }}</strong>
+      </div>
+      <p class="muted" *ngIf="!payments.length">Aucun paiement associé.</p>
+    </article></ng-container
+  >
+</section>

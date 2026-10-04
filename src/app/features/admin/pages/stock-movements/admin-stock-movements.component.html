@@ -1,0 +1,7 @@
+<section class="movements-page"><a routerLink="/admin/stocks">← Stocks</a><header><p class="eyebrow">Inventaire</p><h1>Historique des mouvements</h1></header>
+  <div class="filters"><label>Recherche<input type="search" [(ngModel)]="search" placeholder="Produit, référence, motif…"></label><label>Type<select [(ngModel)]="type"><option value="">Tous</option><option value="ENTREE">Entrée</option><option value="SORTIE">Sortie</option><option value="RETOUR">Retour</option><option value="AJUSTEMENT">Ajustement</option></select></label><label>Date<input type="date" [(ngModel)]="date"></label></div>
+  <p *ngIf="loading" class="skeleton">Chargement des mouvements…</p><p *ngIf="error" class="error-banner" role="alert">{{ error }}</p>
+  <div *ngIf="!loading && !error" class="movement-list"><p *ngIf="!filtered.length" class="empty">Aucun mouvement trouvé.</p>
+    <article *ngFor="let movement of filtered" class="movement-row"><div><strong>{{ movement.produitNom }}</strong><span>{{ movement.referenceVariante }} · {{ movement.motif || 'Sans motif' }}</span></div><strong>{{ movement.typeMouvement }} · {{ movement.quantite }}</strong><time>{{ movement.dateMouvement | date:'dd/MM/yyyy HH:mm' }}</time></article>
+  </div>
+</section>

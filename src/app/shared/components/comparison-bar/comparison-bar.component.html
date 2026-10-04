@@ -1,0 +1,15 @@
+<aside class="comparison-bar" [class.is-collapsed]="collapsed" *ngIf="comparator.count$ | async as count" aria-label="Sélection du comparateur">
+  <button type="button" class="comparison-toggle" (click)="toggleCollapsed()" [attr.aria-expanded]="!collapsed" aria-controls="comparison-panel">{{ collapsed ? 'Afficher la comparaison (' + count + '/3)' : 'Masquer la comparaison' }}</button>
+  <div id="comparison-panel" class="comparison-inner" *ngIf="!collapsed">
+    <div class="comparison-items" *ngIf="comparator.products$ | async as products">
+      <div class="comparison-item" *ngFor="let item of products">
+        <img appImageFallback [src]="image(item)" [alt]="item.produit.nom" loading="lazy">
+        <span>{{ item.produit.nom }}</span>
+        <button type="button" (click)="comparator.remove(item.produit.id)" [attr.aria-label]="'Retirer ' + item.produit.nom">×</button>
+      </div>
+      <span *ngIf="!products.length" class="comparison-loading">Chargement de la sélection…</span>
+      <a *ngIf="count < 3" routerLink="/produits" class="comparison-add">+ Ajouter</a>
+    </div>
+    <a class="button primary comparison-open" routerLink="/comparateur">Comparer ({{ count }}/3)</a>
+  </div>
+</aside>

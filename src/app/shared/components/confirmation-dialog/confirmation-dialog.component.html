@@ -1,0 +1,10 @@
+<div class="confirmation-backdrop" *ngIf="confirmation.request$ | async as request" (click)="confirmation.answer(false)">
+  <section class="confirmation-dialog" role="alertdialog" aria-modal="true" aria-labelledby="confirmation-title" aria-describedby="confirmation-message" (click)="$event.stopPropagation()">
+    <h2 id="confirmation-title">Confirmer cette action</h2>
+    <p id="confirmation-message">{{ request.message }}</p>
+    <div class="confirmation-actions">
+      <button #cancelButton type="button" class="button secondary" (click)="confirmation.answer(false)">Annuler</button>
+      <button type="button" class="button primary" (click)="confirmation.answer(true)">{{ request.confirmLabel }}</button>
+    </div>
+  </section>
+</div>

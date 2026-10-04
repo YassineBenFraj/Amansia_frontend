@@ -1,0 +1,20 @@
+<main class="cart-page container">
+  <header class="cart-heading"><p class="eyebrow">VOTRE SÉLECTION</p><h1>Mon panier</h1><p *ngIf="cart?.lignes?.length">{{ cart?.lignes?.length }} article{{ (cart?.lignes?.length || 0) > 1 ? 's' : '' }} dans votre panier</p></header>
+  <div *ngIf="loading" class="cart-loading"><span></span><span></span></div>
+  <div *ngIf="error" class="error-banner" role="alert">{{ error }}</div>
+  <ng-container *ngIf="!loading && cart as currentCart">
+    <section class="empty-cart" *ngIf="!currentCart.lignes.length"><span aria-hidden="true">◇</span><h2>Votre panier est vide</h2><p>Parcourez nos collections et trouvez la pièce qui transformera votre intérieur.</p><a class="button primary" routerLink="/produits">Découvrir les produits</a></section>
+    <div class="cart-layout" *ngIf="currentCart.lignes.length">
+      <section class="cart-lines" aria-label="Articles du panier">
+        <article class="cart-line" *ngFor="let line of currentCart.lignes" [class.pending]="pendingLines.has(line.id)">
+          <a [routerLink]="['/produits', line.produit.id]" class="line-image"><img appImageFallback [src]="productImage(line.produit.id)" [alt]="line.produit.nom" loading="lazy"></a>
+          <div class="line-details"><p>{{ line.produit.categorieNom }}</p><h2><a [routerLink]="['/produits', line.produit.id]">{{ line.produit.nom }}</a></h2><span>{{ variantLabel(line) }}</span><span class="stock-status" *ngIf="stockQuantity(line) !== null" [class.out]="stockQuantity(line) === 0">{{ stockQuantity(line) === 0 ? 'Rupture de stock' : stockQuantity(line)! < line.quantite ? 'Stock insuffisant · ' + stockQuantity(line) + ' disponible(s)' : 'En stock · ' + stockQuantity(line) + ' disponible(s)' }}</span><strong>{{ line.prixUnitaire | tnd }}</strong></div>
+          <div class="line-actions"><div class="quantity" aria-label="Quantité"><button type="button" (click)="changeQuantity(line, -1)" [disabled]="line.quantite <= 1 || pendingLines.has(line.id)" aria-label="Diminuer la quantité">−</button><span>{{ line.quantite }}</span><button type="button" (click)="changeQuantity(line, 1)" [disabled]="pendingLines.has(line.id) || (stockQuantity(line) !== null && line.quantite >= stockQuantity(line)!)" aria-label="Augmenter la quantité">+</button></div><button type="button" class="remove-line" (click)="remove(line)" [disabled]="pendingLines.has(line.id)">Supprimer</button></div>
+          <div class="line-total"><small>Sous-total</small><strong>{{ line.prixTotal | tnd }}</strong></div>
+        </article>
+        <button type="button" class="clear-cart" (click)="clear()" [disabled]="clearing" [attr.aria-busy]="clearing">{{ clearing ? 'Vidage…' : 'Vider le panier' }}</button>
+      </section>
+      <aside class="cart-summary"><h2>Récapitulatif</h2><div><span>Total</span><strong>{{ currentCart.totalGeneral | tnd }}</strong></div><button type="button" class="button primary checkout-button" (click)="prepareCheckout()">Passer la commande <span>→</span></button><p *ngIf="message" class="notice" role="status">{{ message }}</p><small>Les prix et le total sont confirmés par Amansia.</small></aside>
+    </div>
+  </ng-container>
+</main>

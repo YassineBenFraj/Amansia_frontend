@@ -1,0 +1,24 @@
+<div *ngIf="cancelled" class="progress-message cancelled" role="status">
+  <span aria-hidden="true">×</span> Commande annulée
+</div>
+<div *ngIf="waiting" class="progress-message waiting" role="status">
+  <span aria-hidden="true">○</span> Commande en attente de confirmation
+</div>
+<ol
+  *ngIf="!cancelled && !waiting"
+  class="progress-steps"
+  [class.compact]="compact"
+  aria-label="Avancement de la commande"
+>
+  <li
+    *ngFor="let step of steps; let i = index"
+    [class.done]="state(i) === 'done'"
+    [class.current]="state(i) === 'current'"
+    [attr.aria-current]="state(i) === 'current' ? 'step' : null"
+  >
+    <span class="step-icon" aria-hidden="true">{{
+      state(i) === "done" ? "✓" : state(i) === "current" ? "●" : "○"
+    }}</span>
+    <span>{{ step.label }}</span>
+  </li>
+</ol>
