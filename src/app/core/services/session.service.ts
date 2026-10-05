@@ -51,7 +51,7 @@ export class SessionService implements OnDestroy {
     // Liste explicite : aucune donnée de formulaire ou mot de passe n'est conservé.
     const stored: Utilisateur = {
       id: user.id, nom: user.nom, prenom: user.prenom, email: user.email,
-      telephone: user.telephone, dateNaissance: user.dateNaissance, role: user.role,
+      telephone: user.telephone, photoProfil: user.photoProfil, dateNaissance: user.dateNaissance, role: user.role,
       actif: user.actif, dateCreation: user.dateCreation, dateModification: user.dateModification
     };
     try { localStorage.setItem(USER_KEY, JSON.stringify(stored)); } catch {

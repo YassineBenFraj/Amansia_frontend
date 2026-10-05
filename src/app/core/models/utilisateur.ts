@@ -6,6 +6,7 @@ export interface Utilisateur {
   prenom: string;
   email: string;
   telephone: string | null;
+  photoProfil: string | null;
   dateNaissance: string | null;
   role: Role;
   actif: boolean;

@@ -68,12 +68,14 @@
             [attr.aria-expanded]="profileOpen"
             aria-label="Menu du profil"
           >
-            <span class="profile-icon" aria-hidden="true"></span
-            ><span class="profile-name">{{ user.prenom || "Profil" }}</span
+            <span class="profile-avatar" aria-hidden="true">
+              <img *ngIf="user.photoProfil && brokenPhotoUrl !== user.photoProfil; else avatarInitials" [src]="profile.imageUrl(user.photoProfil)" (error)="brokenPhotoUrl = user.photoProfil" alt="">
+              <ng-template #avatarInitials>{{ initials(user.prenom, user.nom) }}</ng-template>
+            </span><span class="profile-name">{{ user.prenom || "Profil" }}</span
             ><span aria-hidden="true">⌄</span>
           </button>
           <div class="profile-dropdown" *ngIf="profileOpen">
-            <a routerLink="/mon-compte" (click)="closeMenu()">Profil</a>
+            <a [routerLink]="user.role === clientRole ? '/profil' : '/mon-compte'" (click)="closeMenu()">Profil</a>
             <a *ngIf="user.role === clientRole" routerLink="/mes-commandes" (click)="closeMenu()">Mes commandes</a>
             <button type="button" (click)="logout()">Déconnexion</button>
           </div>
@@ -106,7 +108,7 @@
           ><a routerLink="/produits">Produits</a>
         </div>
         <div>
-          <strong>Votre espace</strong><a routerLink="/mon-compte">Mon compte</a>
+          <strong>Votre espace</strong><a routerLink="/profil">Mon compte</a>
         </div>
         <p class="copyright">© 2026 Amansia. Tous droits réservés.</p>
       </ng-container>

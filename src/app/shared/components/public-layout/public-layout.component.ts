@@ -5,6 +5,7 @@ import { Role } from '../../../core/models/role';
 import { PanierService } from '../../../core/services/panier.service';
 import { FavorisService } from '../../../core/services/favoris.service';
 import { ComparatorService } from '../../../core/services/comparator.service';
+import { ProfileService } from '../../../core/services/profile.service';
 
 @Component({
   selector: 'app-public-layout',
@@ -20,6 +21,8 @@ export class PublicLayoutComponent {
   readonly cart = inject(PanierService);
   readonly favoris = inject(FavorisService);
   readonly comparator = inject(ComparatorService);
+  readonly profile = inject(ProfileService);
+  brokenPhotoUrl: string | null = null;
   private readonly destroyRef = inject(DestroyRef);
   menuOpen = false;
   profileOpen = false;
@@ -40,6 +43,9 @@ export class PublicLayoutComponent {
   }
   toggleProfile(): void {
     this.profileOpen = !this.profileOpen;
+  }
+  initials(prenom: string, nom: string): string {
+    return `${prenom?.[0] || ''}${nom?.[0] || ''}`.toUpperCase() || 'A';
   }
   logout(): void {
     this.closeMenu();
