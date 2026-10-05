@@ -7,6 +7,7 @@ import { AdminService } from '../../../../core/services/admin.service';
 import { SessionService } from '../../../../core/services/session.service';
 import { httpErrorMessage } from '../../../../core/services/http-error';
 import { ConfirmationService } from '../../../../core/services/confirmation.service';
+import { ProfileService } from '../../../../core/services/profile.service';
 
 @Component({
   selector: 'app-admin-users',
@@ -20,6 +21,7 @@ export class AdminUsersComponent {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly confirmation = inject(ConfirmationService);
+  readonly profile = inject(ProfileService);
   users: Utilisateur[] = [];
   search = '';
   role = '';
@@ -29,6 +31,7 @@ export class AdminUsersComponent {
   error = '';
   message = '';
   readonly roles = Object.values(Role);
+  initials(user: Utilisateur): string { return `${user.prenom?.[0] || ''}${user.nom?.[0] || ''}`.toUpperCase() || 'U'; }
 
   constructor() {
     this.load();

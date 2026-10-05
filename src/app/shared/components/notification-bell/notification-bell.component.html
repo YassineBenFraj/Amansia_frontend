@@ -1,0 +1,73 @@
+<div class="bell-wrap" [class.admin]="admin">
+  <button
+    class="bell-button"
+    type="button"
+    aria-label="Notifications"
+    [attr.aria-expanded]="open"
+    (click)="toggle()"
+  >
+    <svg
+      viewBox="0 0 24 24"
+      width="23"
+      height="23"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.8"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" />
+    </svg>
+    <span *ngIf="notifications.count$ | async as count" class="bell-count">{{
+      count > 99 ? "99+" : count
+    }}</span>
+  </button>
+  <section *ngIf="open" class="bell-panel" aria-label="Notifications récentes">
+    <div class="panel-head">
+      <strong>Notifications</strong
+      ><button type="button" (click)="open = false" aria-label="Fermer">
+        ×
+      </button>
+    </div>
+    <p *ngIf="notifications.loading" class="panel-message">Chargement…</p>
+    <p *ngIf="notifications.error" class="panel-message error" role="alert">
+      {{ notifications.error }}
+    </p>
+    <ng-container *ngIf="notifications.recent$ | async as items">
+      <p
+        *ngIf="!notifications.loading && !notifications.error && !items.length"
+        class="panel-message"
+      >
+        Vous n'avez aucune notification pour le moment.
+      </p>
+      <button
+        *ngFor="let item of items"
+        type="button"
+        class="notice"
+        [class.unread]="!item.estLue"
+        (click)="select(item)"
+      >
+        <span class="notice-icon" aria-hidden="true">{{
+          notifications.icon(item.type)
+        }}</span
+        ><span
+          ><strong>{{ item.titre }}</strong
+          ><small>{{ item.message }}</small
+          ><time>{{
+            item.dateCreation | date: "dd/MM/yyyy à HH:mm"
+          }}</time></span
+        >
+      </button>
+    </ng-container>
+    <div class="panel-actions">
+      <button type="button" (click)="notifications.markAllRead()">
+        Tout marquer comme lu</button
+      ><a
+        [routerLink]="admin ? '/admin/notifications' : '/notifications'"
+        (click)="open = false"
+        >Voir toutes les notifications</a
+      >
+    </div>
+  </section>
+</div>

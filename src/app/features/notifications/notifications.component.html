@@ -1,0 +1,15 @@
+<main class="notifications-page">
+  <header><div><p class="eyebrow">VOTRE ESPACE</p><h1>Notifications</h1><p>Les nouvelles de vos commandes et de votre boutique.</p></div><div class="header-actions"><button type="button" (click)="notifications.load()" [disabled]="notifications.loading">Actualiser</button><button type="button" (click)="notifications.markAllRead()">Tout marquer comme lu</button></div></header>
+  <p *ngIf="notifications.loading" class="loading" role="status">Chargement des notifications…</p>
+  <p *ngIf="notifications.error" class="error-banner" role="alert">{{ notifications.error }}</p>
+  <ng-container *ngIf="notifications.items$ | async as items">
+    <section *ngIf="!notifications.loading && !notifications.error && !items.length" class="empty-state"><h2>Vous n'avez aucune notification pour le moment.</h2><p>Les événements importants apparaîtront ici.</p></section>
+    <section *ngIf="items.length" class="notice-list" aria-label="Vos notifications">
+      <article *ngFor="let item of items" [class.unread]="!item.estLue">
+        <div class="notice-icon" aria-hidden="true">{{ notifications.icon(item.type) }}</div>
+        <div class="notice-content"><div class="notice-title"><h2>{{ item.titre }}</h2><span *ngIf="!item.estLue" class="unread-dot" aria-label="Non lue"></span></div><p>{{ item.message }}</p><time>{{ item.dateCreation | date:'dd/MM/yyyy à HH:mm' }}</time></div>
+        <button type="button" (click)="notifications.open(item)">{{ item.lien ? 'Voir le détail' : item.estLue ? 'Lue' : 'Marquer comme lue' }}</button>
+      </article>
+    </section>
+  </ng-container>
+</main>

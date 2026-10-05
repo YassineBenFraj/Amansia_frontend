@@ -18,11 +18,17 @@ export class CategoriesListComponent {
   private readonly confirmation = inject(ConfirmationService);
   private readonly destroyRef = inject(DestroyRef);
   categories: Categorie[] = [];
+  search = '';
+  status = '';
   loading = true;
   error = '';
   message = '';
   constructor() {
     this.load();
+  }
+  get filtered(): Categorie[] {
+    const query = this.search.trim().toLowerCase();
+    return this.categories.filter(item => (!this.status || String(item.actif) === this.status) && (!query || `${item.nom} ${item.description || ''}`.toLowerCase().includes(query)));
   }
   load(): void {
     this.loading = true;

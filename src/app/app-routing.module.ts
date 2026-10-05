@@ -13,6 +13,12 @@ const routes: Routes = [
       import('./features/auth/auth.module').then((module) => module.AuthModule),
   },
   {
+    path: 'admin',
+    canActivate: [RoleGuard],
+    data: { roles: [Role.ADMINISTRATEUR] },
+    loadChildren: () => import('./features/admin/admin.module').then(module => module.AdminModule),
+  },
+  {
     path: '',
     component: PublicLayoutComponent,
     children: [
@@ -74,6 +80,15 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'notifications',
+        canActivate: [RoleGuard],
+        data: { roles: [Role.CLIENT] },
+        loadChildren: () =>
+          import('./features/notifications/notifications.module').then(
+            (module) => module.NotificationsModule,
+          ),
+      },
+      {
         path: 'profil',
         canActivate: [RoleGuard],
         data: { roles: [Role.CLIENT] },
@@ -97,16 +112,6 @@ const routes: Routes = [
           import('./features/cart/cart.module').then(
             (module) => module.CartModule,
           ),
-      },
-      {
-        path: 'admin',
-        canActivate: [RoleGuard],
-        data: { roles: [Role.ADMINISTRATEUR] },
-        loadChildren: () =>
-          import('./features/admin/admin.module').then(
-            (module) => module.AdminModule,
-          ),
-        title: 'Administration · Amansia',
       },
       {
         path: 'acces-refuse',

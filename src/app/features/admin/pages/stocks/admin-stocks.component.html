@@ -1,25 +1,8 @@
-<section class="stocks-page">
-  <header class="page-heading"><div><p class="eyebrow">Inventaire</p><h1>Stocks</h1><p>Quantités disponibles par variante.</p></div><a routerLink="/admin/stocks/mouvements" class="button secondary">Voir les mouvements</a></header>
+<section class="stocks-page admin-page">
+  <header class="page-heading"><div><p class="eyebrow">INVENTAIRE</p><h1>Stocks</h1><p class="muted">Quantités disponibles par variante et seuils d’alerte.</p></div><a routerLink="/admin/stocks/mouvements" class="button secondary">Voir les mouvements</a></header>
   <div class="filters"><label>Recherche<input type="search" [(ngModel)]="search" placeholder="Produit, référence, couleur…"></label><label>État<select [(ngModel)]="filter"><option value="">Tous</option><option value="disponible">Disponible</option><option value="alerte">Stock faible</option><option value="rupture">Rupture</option></select></label></div>
-  <p *ngIf="loading" class="skeleton" aria-live="polite">Chargement des stocks…</p>
-  <p *ngIf="error" class="error-banner" role="alert">{{ error }}</p>
-  <div *ngIf="!loading && !error" class="stock-list">
-    <p *ngIf="!filtered.length" class="empty">Aucune variante trouvée.</p>
-    <article *ngFor="let stock of filtered" class="stock-row">
-      <div><strong>{{ stock.produitNom }}</strong><span>{{ stock.reference }} · {{ stock.couleur || 'Couleur standard' }} · {{ stock.materiau || 'Matériau standard' }}</span></div>
-      <div class="stock-level"><strong>{{ stock.quantite }}</strong><span [class.low]="stock.quantite <= stock.seuilAlerte">{{ state(stock) }}</span></div>
-      <button type="button" class="button secondary" (click)="open(stock)">Mouvement</button>
-    </article>
-  </div>
+  <div *ngIf="loading" class="skeleton" role="status" aria-label="Chargement des stocks"></div><p *ngIf="error" class="error-banner" role="alert">{{ error }} <button type="button" (click)="load()">Réessayer</button></p>
+  <div *ngIf="!loading && !error" class="table-wrap stock-table"><table><thead><tr><th>Produit</th><th>Variante</th><th>Quantité</th><th>Seuil</th><th>État</th><th>Dernière modification</th><th>Action</th></tr></thead><tbody><tr *ngFor="let stock of filtered"><td><strong>{{ stock.produitNom }}</strong></td><td>{{ stock.reference }}<small>{{ stock.couleur || 'Couleur standard' }} · {{ stock.materiau || 'Matériau standard' }}</small></td><td><strong>{{ stock.quantite }}</strong></td><td>{{ stock.seuilAlerte }}</td><td><span class="status" [attr.data-status]="statusCode(stock)">{{ state(stock) }}</span></td><td>{{ stock.dateMiseAJour ? (stock.dateMiseAJour | date:'dd/MM/yyyy HH:mm') : '—' }}</td><td><button type="button" class="button secondary" (click)="open(stock)">Mouvement</button></td></tr></tbody></table><p *ngIf="!filtered.length" class="empty">Aucune variante trouvée.</p></div>
+  <p class="list-count" *ngIf="!loading && !error">{{ filtered.length }} variante(s) affichée(s)</p>
 </section>
-<div *ngIf="editing as stock" class="modal-backdrop" (click)="close()">
-  <section class="stock-modal" role="dialog" aria-modal="true" aria-labelledby="stock-title" (click)="$event.stopPropagation()">
-    <h2 id="stock-title">Mouvement · {{ stock.produitNom }}</h2><p>{{ stock.reference }} · Stock actuel : {{ stock.quantite }}</p>
-    <form (ngSubmit)="save()">
-      <label>Type<select name="type" [(ngModel)]="movement.typeMouvement"><option value="ENTREE">Entrée</option><option value="SORTIE">Sortie</option><option value="AJUSTEMENT">Ajustement positif</option></select></label>
-      <label>Quantité<input name="quantite" type="number" min="1" step="1" required [(ngModel)]="movement.quantite"></label>
-      <label>Motif<input name="motif" type="text" maxlength="255" required [(ngModel)]="movement.motif" placeholder="Ex. réception fournisseur"></label>
-      <div class="actions"><button type="button" class="button secondary" (click)="close()" [disabled]="saving">Annuler</button><button type="submit" class="button primary" [disabled]="saving || !movement.motif.trim() || movement.quantite < 1">{{ saving ? 'Enregistrement…' : 'Enregistrer' }}</button></div>
-    </form>
-  </section>
-</div>
+<div *ngIf="editing as stock" class="modal-backdrop" (click)="close()"><section class="stock-modal" role="dialog" aria-modal="true" aria-labelledby="stock-title" (click)="$event.stopPropagation()"><button type="button" class="modal-close" (click)="close()" aria-label="Fermer">×</button><h2 id="stock-title">Mouvement · {{ stock.produitNom }}</h2><p>{{ stock.reference }} · Stock actuel : {{ stock.quantite }}</p><form (ngSubmit)="save()"><label>Type<select name="type" [(ngModel)]="movement.typeMouvement"><option value="ENTREE">Entrée</option><option value="SORTIE">Sortie</option><option value="AJUSTEMENT">Ajustement positif</option></select></label><label>Quantité<input name="quantite" type="number" min="1" step="1" required [(ngModel)]="movement.quantite"></label><label>Motif<input name="motif" type="text" maxlength="255" required [(ngModel)]="movement.motif" placeholder="Ex. réception fournisseur"></label><div class="actions"><button type="button" class="button secondary" (click)="close()" [disabled]="saving">Annuler</button><button type="submit" class="button primary" [disabled]="saving || !movement.motif.trim() || movement.quantite < 1">{{ saving ? 'Enregistrement…' : 'Enregistrer' }}</button></div></form></section></div>

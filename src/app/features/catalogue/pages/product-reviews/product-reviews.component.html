@@ -7,11 +7,18 @@
     <span class="reviews-count">{{ avis.length }} avis</span>
   </div>
 
-  <div *ngIf="loading" class="reviews-loading" aria-label="Chargement des avis"></div>
+  <div
+    *ngIf="loading"
+    class="reviews-loading"
+    aria-label="Chargement des avis"
+  ></div>
   <p *ngIf="error" class="error-banner" role="alert">{{ error }}</p>
   <p *ngIf="message" class="notice" role="status">{{ message }}</p>
 
-  <div *ngIf="!loading && !error && !avis.length" class="reviews-empty">
+  <div
+    *ngIf="!loading && !error && !avis.length && !avisPersonnel"
+    class="reviews-empty"
+  >
     <strong>Pas encore d’avis</strong>
     <span>Soyez le premier client à partager votre expérience.</span>
   </div>
@@ -20,50 +27,127 @@
     <article class="review" *ngFor="let item of avis">
       <div class="review-meta">
         <div class="stars" [attr.aria-label]="starLabel(item.note)">
-          <span *ngFor="let star of stars" [class.filled]="star <= item.note">★</span>
+          <span *ngFor="let star of stars" [class.filled]="star <= item.note"
+            >★</span
+          >
         </div>
-        <time [attr.datetime]="item.dateCreation">{{ item.dateCreation | date:'dd/MM/yyyy' }}</time>
+        <time [attr.datetime]="item.dateCreation">{{
+          item.dateCreation | date: "dd/MM/yyyy"
+        }}</time>
       </div>
-      <p class="review-comment" *ngIf="item.commentaire">{{ item.commentaire }}</p>
-      <p class="review-author">{{ item.utilisateurNom || 'Client' }}</p>
+      <p class="review-comment" *ngIf="item.commentaire">
+        {{ item.commentaire }}
+      </p>
+      <p class="review-author">{{ item.utilisateurNom || "Client" }}</p>
       <div class="review-actions" *ngIf="isOwner(item)">
-        <button type="button" class="text-button" (click)="startEdit(item)">Modifier</button>
-        <button type="button" class="text-button danger" (click)="remove(item)" [disabled]="deletingId === item.id">Supprimer</button>
+        <button type="button" class="text-button" (click)="startEdit(item)">
+          Modifier
+        </button>
+        <button
+          type="button"
+          class="text-button danger"
+          (click)="remove(item)"
+          [disabled]="deletingId === item.id"
+        >
+          Supprimer
+        </button>
       </div>
     </article>
   </div>
 
   <div class="pending-review" *ngIf="avisPersonnel && !avisPersonnel.approuve">
-    <strong>Votre avis est en attente de modération.</strong>
-    <span>Il sera visible après validation par notre équipe.</span>
+    <div class="stars" [attr.aria-label]="starLabel(avisPersonnel.note)">
+      <span
+        *ngFor="let star of stars"
+        [class.filled]="star <= avisPersonnel.note"
+        >★</span
+      >
+    </div>
+    <p class="review-comment" *ngIf="avisPersonnel.commentaire">
+      {{ avisPersonnel.commentaire }}
+    </p>
     <div class="review-actions">
-      <button type="button" class="text-button" (click)="startEdit(avisPersonnel)">Modifier</button>
-      <button type="button" class="text-button danger" (click)="remove(avisPersonnel)" [disabled]="deletingId === avisPersonnel.id">Supprimer</button>
+      <button
+        type="button"
+        class="text-button"
+        (click)="startEdit(avisPersonnel)"
+      >
+        Modifier
+      </button>
+      <button
+        type="button"
+        class="text-button danger"
+        (click)="remove(avisPersonnel)"
+        [disabled]="deletingId === avisPersonnel.id"
+      >
+        Supprimer
+      </button>
     </div>
   </div>
 
   <div class="review-form-area" *ngIf="canReview">
-    <div *ngIf="!commandesEligibles.length && !avisPersonnel" class="reviews-empty compact">
+    <div
+      *ngIf="!commandesEligibles.length && !avisPersonnel"
+      class="reviews-empty compact"
+    >
       <strong>Avis réservé aux clients ayant acheté ce produit</strong>
       <span>Votre commande doit contenir ce produit.</span>
     </div>
-    <form *ngIf="(commandesEligibles.length && !avisPersonnel) || editingId" class="review-form" [formGroup]="form" (ngSubmit)="submit()">
-      <h3>{{ editingId ? 'Modifier votre avis' : 'Partager votre avis' }}</h3>
+    <form
+      *ngIf="(commandesEligibles.length && !avisPersonnel) || editingId"
+      class="review-form"
+      [formGroup]="form"
+      (ngSubmit)="submit()"
+    >
+      <h3>{{ editingId ? "Modifier votre avis" : "Partager votre avis" }}</h3>
       <fieldset>
         <legend>Votre note</legend>
         <div class="rating-picker">
-          <button type="button" *ngFor="let star of stars" [class.selected]="star <= form.controls.note.value" (click)="selectNote(star)" [attr.aria-label]="star + ' étoile' + (star > 1 ? 's' : '')">★</button>
+          <button
+            type="button"
+            *ngFor="let star of stars"
+            [class.selected]="star <= form.controls.note.value"
+            (click)="selectNote(star)"
+            [attr.aria-label]="star + ' étoile' + (star > 1 ? 's' : '')"
+          >
+            ★
+          </button>
         </div>
-        <small *ngIf="form.controls.note.invalid && form.controls.note.touched" class="field-error">Choisissez une note de 1 à 5.</small>
+        <small
+          *ngIf="form.controls.note.invalid && form.controls.note.touched"
+          class="field-error"
+          >Choisissez une note de 1 à 5.</small
+        >
       </fieldset>
       <label for="review-comment">Commentaire <span>(facultatif)</span></label>
-      <textarea id="review-comment" formControlName="commentaire" rows="4" maxlength="1000" placeholder="Votre expérience avec ce produit"></textarea>
-      <small *ngIf="form.controls.commentaire.invalid" class="field-error">Le commentaire est trop long.</small>
+      <textarea
+        id="review-comment"
+        formControlName="commentaire"
+        rows="4"
+        maxlength="1000"
+        placeholder="Votre expérience avec ce produit"
+      ></textarea>
+      <small *ngIf="form.controls.commentaire.invalid" class="field-error"
+        >Le commentaire est trop long.</small
+      >
       <div class="form-actions">
-        <button class="button primary" type="submit" [disabled]="saving">{{ saving ? 'Envoi…' : (editingId ? 'Enregistrer' : 'Publier mon avis') }}</button>
-        <button *ngIf="editingId" class="button secondary" type="button" (click)="cancelEdit()">Annuler</button>
+        <button class="button primary" type="submit" [disabled]="saving">
+          {{
+            saving ? "Envoi…" : editingId ? "Enregistrer" : "Publier mon avis"
+          }}
+        </button>
+        <button
+          *ngIf="editingId"
+          class="button secondary"
+          type="button"
+          (click)="cancelEdit()"
+        >
+          Annuler
+        </button>
       </div>
     </form>
   </div>
-  <p *ngIf="!canReview" class="reviews-login">Connectez-vous avec un compte client pour partager votre avis.</p>
+  <p *ngIf="!canReview" class="reviews-login">
+    Connectez-vous avec un compte client pour partager votre avis.
+  </p>
 </section>

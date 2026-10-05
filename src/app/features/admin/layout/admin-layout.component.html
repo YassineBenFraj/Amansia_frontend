@@ -1,82 +1,45 @@
+<svg class="admin-icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <symbol id="admin-dashboard" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+  <symbol id="admin-products" viewBox="0 0 24 24"><path d="M3 7 12 3l9 4-9 4-9-4Zm0 0v10l9 4 9-4V7M12 11v10"/></symbol>
+  <symbol id="admin-categories" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></symbol>
+  <symbol id="admin-orders" viewBox="0 0 24 24"><path d="M6 3h12l2 4v14H4V7l2-4Zm-2 4h16M9 12h6m-6 4h6"/></symbol>
+  <symbol id="admin-payments" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h5"/></symbol>
+  <symbol id="admin-stock" viewBox="0 0 24 24"><path d="M3 8 12 4l9 4v12H3V8Zm0 0 9 4 9-4m-9 4v8M7 16h2"/></symbol>
+  <symbol id="admin-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2H3Zm13-15a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 5v1h-4"/></symbol>
+  <symbol id="admin-reviews" viewBox="0 0 24 24"><path d="M12 3 15 9l6.5 1-4.7 4.7 1.1 6.3L12 18l-5.9 3 1.1-6.3L2.5 10 9 9l3-6Z"/></symbol>
+  <symbol id="admin-notifications" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></symbol>
+</svg>
 <div class="admin-shell">
-  <button
-    class="menu-toggle"
-    type="button"
-    (click)="toggleMenu()"
-    aria-label="Ouvrir le menu"
-  >
-    ☰
-  </button>
-  <aside class="admin-sidebar" [class.open]="menuOpen">
-    <a class="admin-brand" routerLink="/admin/dashboard" (click)="closeMenu()"
-      ><span>AMANSIA</span><small>Administration</small></a
-    >
+  <div class="admin-scrim" *ngIf="menuOpen" (click)="closeMenu()"></div>
+  <aside class="admin-sidebar" id="admin-navigation" [class.open]="menuOpen">
+    <a class="admin-brand" routerLink="/admin/dashboard" (click)="closeMenu()"><span class="brand-mark">A</span><span><strong>AMANSIA</strong><small>Administration</small></span></a>
     <nav aria-label="Navigation administrateur">
-      <a
-        routerLink="/admin/dashboard"
-        routerLinkActive="active"
-        (click)="closeMenu()"
-        >Dashboard</a
-      >
-      <a
-        routerLink="/admin/utilisateurs"
-        routerLinkActive="active"
-        (click)="closeMenu()"
-        >Utilisateurs</a
-      >
-      <a
-        routerLink="/admin/categories"
-        routerLinkActive="active"
-        (click)="closeMenu()"
-        >Catégories</a
-      >
-      <a
-        routerLink="/admin/produits"
-        routerLinkActive="active"
-        (click)="closeMenu()"
-        >Produits</a
-      >
-      <a
-        routerLink="/admin/commandes"
-        routerLinkActive="active"
-        (click)="closeMenu()"
-        >Commandes</a
-      >
-      <a routerLink="/admin/stocks" routerLinkActive="active" (click)="closeMenu()">Stocks</a>
-      <a
-        routerLink="/admin/paiements"
-        routerLinkActive="active"
-        (click)="closeMenu()"
-        >Paiements</a
-      >
-      <a
-        routerLink="/admin/avis"
-        routerLinkActive="active"
-        (click)="closeMenu()"
-        >Avis</a
-      >
+      <div class="admin-nav-group" *ngFor="let group of groups">
+        <p>{{ group.label }}</p>
+        <a *ngFor="let link of group.links" [routerLink]="link.path" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: link.path === '/admin/dashboard' }" (click)="closeMenu()">
+          <svg class="admin-icon" aria-hidden="true"><use [attr.href]="'#admin-' + link.icon"></use></svg><span>{{ link.label }}</span>
+        </a>
+      </div>
     </nav>
-    <div class="admin-sidebar-footer">
-      <div class="profile-menu">
-        <button
-          class="profile-trigger"
-          type="button"
-          (click)="toggleProfile()"
-          [attr.aria-expanded]="profileOpen"
-          aria-label="Menu du profil"
-        >
-          <span class="profile-icon" aria-hidden="true"></span
-          ><span class="profile-name">{{ userName }}</span
-          ><span aria-hidden="true">⌄</span>
-        </button>
-        <div class="profile-dropdown" *ngIf="profileOpen">
-          <a routerLink="/mon-compte" (click)="closeProfile()">Profil</a
-          ><button type="button" (click)="logout()">Déconnexion</button>
+    <div class="admin-sidebar-foot"><span class="foot-dot"></span>Espace de gestion Amansia</div>
+  </aside>
+  <div class="admin-workspace">
+    <header class="admin-topbar">
+      <div class="admin-topbar-start">
+        <button class="admin-menu-button" type="button" (click)="menuOpen = !menuOpen" [attr.aria-expanded]="menuOpen" aria-controls="admin-navigation" [attr.aria-label]="menuOpen ? 'Fermer le menu' : 'Ouvrir le menu'">☰</button>
+        <div class="admin-location"><small>Administration <span aria-hidden="true">/</span> {{ section }}</small><strong>{{ pageTitle }}</strong></div>
+      </div>
+      <div class="admin-topbar-actions" *ngIf="auth.user$ | async as user">
+        <app-notification-bell [admin]="true"></app-notification-bell>
+        <div class="admin-account">
+          <button type="button" class="admin-account-trigger" (click)="profileOpen = !profileOpen" [attr.aria-expanded]="profileOpen" aria-label="Menu du compte administrateur">
+            <span class="admin-avatar"><img *ngIf="user.photoProfil && brokenPhotoUrl !== user.photoProfil; else adminInitials" [src]="profile.imageUrl(user.photoProfil)" (error)="brokenPhotoUrl = user.photoProfil" alt=""><ng-template #adminInitials>{{ initials(user.prenom, user.nom) }}</ng-template></span>
+            <span class="admin-account-name">{{ user.prenom }} {{ user.nom }}</span><span class="admin-chevron" aria-hidden="true">⌄</span>
+          </button>
+          <div class="admin-account-menu" *ngIf="profileOpen"><a routerLink="/mon-compte" (click)="profileOpen = false">Mon compte</a><button type="button" (click)="logout()">Déconnexion</button></div>
         </div>
       </div>
-    </div>
-  </aside>
-  <main class="admin-main">
-    <router-outlet></router-outlet>
-  </main>
+    </header>
+    <main class="admin-main" id="admin-content"><router-outlet></router-outlet></main>
+  </div>
 </div>

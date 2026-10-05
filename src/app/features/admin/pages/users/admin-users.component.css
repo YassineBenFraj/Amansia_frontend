@@ -53,10 +53,11 @@ td {
 .status.inactive {
   color: #9a4438;
 }
-.actions {
+.action-buttons {
   display: flex;
   flex-wrap: nowrap;
   gap: 10px;
+  align-items: center;
 }
 .actions button {
   border: 0;
@@ -88,3 +89,5 @@ td {
     grid-template-columns: 1fr;
   }
 }
+.user-cell{display:flex;align-items:center;gap:9px}.user-avatar{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:#e8eee7;color:#3a6042;overflow:hidden;font-size:10px;font-weight:700}.user-avatar img{width:100%;height:100%;object-fit:cover}.admin-shell .admin-page .table-wrap{overflow-x:auto}
+.actions{display:table-cell;vertical-align:middle;min-width:265px}.admin-shell td.actions button{white-space:nowrap}.admin-shell td,.admin-shell th{vertical-align:middle}

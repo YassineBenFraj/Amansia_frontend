@@ -2,6 +2,7 @@ import { Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs';
 import { Stock, MouvementStockRequest } from '../../../../core/models/stock';
+import { stockState } from '../../../../core/models/stock-state';
 import { StockService } from '../../../../core/services/stock.service';
 import { ToastService } from '../../../../core/services/toast.service';
 import { httpErrorMessage } from '../../../../core/services/http-error';
@@ -25,13 +26,16 @@ export class AdminStocksComponent {
   get filtered(): Stock[] {
     const query = this.search.trim().toLocaleLowerCase();
     return this.stocks.filter(stock => {
-      const state = stock.quantite === 0 ? 'rupture' : stock.quantite <= stock.seuilAlerte ? 'alerte' : 'disponible';
+      const state = stockState(stock);
       return (!this.filter || this.filter === state) && (!query || `${stock.produitNom} ${stock.reference} ${stock.couleur || ''} ${stock.materiau || ''}`.toLocaleLowerCase().includes(query));
     });
   }
 
   state(stock: Stock): string {
-    return stock.quantite === 0 ? 'Rupture' : stock.quantite <= stock.seuilAlerte ? 'Stock faible' : 'Disponible';
+    return { rupture: 'Rupture', alerte: 'Stock faible', disponible: 'Disponible' }[stockState(stock)];
+  }
+  statusCode(stock: Stock): string {
+    return { rupture: 'RUPTURE', alerte: 'STOCK_FAIBLE', disponible: 'DISPONIBLE' }[stockState(stock)];
   }
 
   open(stock: Stock): void {
@@ -52,7 +56,7 @@ export class AdminStocksComponent {
       });
   }
 
-  private load(): void {
+  load(): void {
     this.loading = true;
     this.error = '';
     this.service.adminStocks().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({

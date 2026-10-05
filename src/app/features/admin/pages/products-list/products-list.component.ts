@@ -5,6 +5,11 @@ import { Produit, ProduitRequest } from '../../../../core/models/catalogue';
 import { CatalogueService } from '../../../../core/services/catalogue.service';
 import { httpErrorMessage } from '../../../../core/services/http-error';
 import { ConfirmationService } from '../../../../core/services/confirmation.service';
+import { ImageProduit } from '../../../../core/models/catalogue';
+import { catchError, forkJoin, of } from 'rxjs';
+import { StockService } from '../../../../core/services/stock.service';
+import { Stock } from '../../../../core/models/stock';
+import { productAvailability, ProductAvailability } from '../../../../core/models/product-availability';
 
 @Component({
   selector: 'app-admin-products-list',
@@ -17,8 +22,16 @@ export class ProductsListComponent {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly confirmation = inject(ConfirmationService);
+  private readonly stockService = inject(StockService);
   products: Produit[] = [];
+  images: ImageProduit[] = [];
+  imageByProduct = new Map<number, ImageProduit>();
+  stocksByProduct = new Map<number, Stock[]>();
+  availabilityReady = false;
   search = '';
+  category = '';
+  status = '';
+  availability = '';
   loading = true;
   error = '';
   message = '';
@@ -27,22 +40,48 @@ export class ProductsListComponent {
   }
   get filteredProducts(): Produit[] {
     const value = this.search.trim().toLowerCase();
-    return value
-      ? this.products.filter((item) =>
-          `${item.nom} ${item.categorieNom} ${item.marque || ''}`
-            .toLowerCase()
-            .includes(value),
-        )
-      : this.products;
+    return this.products.filter(item =>
+      (!value || `${item.nom} ${item.categorieNom} ${item.marque || ''}`.toLowerCase().includes(value)) &&
+      (!this.category || String(item.categorieId) === this.category) &&
+      (!this.status || String(item.actif) === this.status) &&
+      (!this.availabilityReady || !this.availability || (this.availability === 'disponible' ? this.availabilityState(item) === 'disponible' : this.availabilityState(item) !== 'disponible')));
+  }
+  get categories(): { id: number; nom: string }[] {
+    return [...new Map(this.products.map(item => [item.categorieId, { id: item.categorieId, nom: item.categorieNom }])).values()];
+  }
+  imageUrl(product: Produit): string {
+    return this.catalogue.imageUrl(this.imageByProduct.get(product.id));
+  }
+  availabilityState(product: Produit): ProductAvailability {
+    return productAvailability(this.stocksByProduct.get(product.id) || []);
+  }
+  availabilityLabel(product: Produit): string {
+    return { disponible: 'Disponible', rupture: 'Rupture', 'sans-variante': 'Aucune variante' }[this.availabilityState(product)];
   }
   load(): void {
     this.loading = true;
-    this.catalogue
-      .produitsAdmin()
+    this.error = '';
+    this.availabilityReady = false;
+    forkJoin({
+      products: this.catalogue.produitsAdmin(),
+      images: this.catalogue.images().pipe(catchError(() => of([] as ImageProduit[]))),
+      stocks: this.stockService.adminStocks().pipe(catchError(() => of(null as Stock[] | null))),
+    })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (products) => {
+        next: ({ products, images, stocks }) => {
           this.products = products;
+          this.images = images;
+          this.imageByProduct = new Map<number, ImageProduit>();
+          images.forEach(image => { if (!this.imageByProduct.has(image.produitId) || image.principale) this.imageByProduct.set(image.produitId, image); });
+          this.stocksByProduct = new Map<number, Stock[]>();
+          this.availabilityReady = stocks !== null;
+          this.availability = this.availabilityReady ? this.availability : '';
+          stocks?.forEach(stock => {
+            const productStocks = this.stocksByProduct.get(stock.produitId) || [];
+            productStocks.push(stock);
+            this.stocksByProduct.set(stock.produitId, productStocks);
+          });
           this.loading = false;
         },
         error: (error) => {
@@ -56,6 +95,9 @@ export class ProductsListComponent {
   }
   edit(product: Produit): void {
     void this.router.navigate(['/admin/produits', product.id]);
+  }
+  view(product: Produit): void {
+    void this.router.navigate(['/admin/produits', product.id, 'consulter']);
   }
   async toggle(product: Produit): Promise<void> {
     if (!await this.confirmation.ask(`${product.actif ? 'Désactiver' : 'Activer'} le produit « ${product.nom} » ?`)) return;

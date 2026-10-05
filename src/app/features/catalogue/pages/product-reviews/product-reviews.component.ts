@@ -56,7 +56,7 @@ export class ProductReviewsComponent implements OnChanges {
       commandes: commandes$.pipe(catchError(() => of([] as Commande[])))
     }).pipe(finalize(() => { this.loading = false; }), takeUntilDestroyed(this.destroyRef)).subscribe({
       next: ({ avis, commandes }) => {
-        this.avis = avis;
+        this.avis = avis.filter(item => item.approuve);
         this.commandesEligibles = commandes.filter(commande =>
           commande.lignes?.some(ligne => ligne.produitId === this.productId)
         );

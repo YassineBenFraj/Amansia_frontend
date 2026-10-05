@@ -15,6 +15,7 @@
     (ngSubmit)="submit()"
     class="admin-form"
   >
+    <section class="form-section"><h2>Informations générales</h2>
     <label for="name">Nom</label><input id="name" formControlName="nom" /><small
       class="field-error"
       *ngIf="form.controls.nom.invalid && form.controls.nom.touched"
@@ -30,8 +31,8 @@
       id="description"
       rows="5"
       formControlName="description"
-    ></textarea>
-    <div class="form-grid">
+    ></textarea><label for="brand">Marque</label><input id="brand" formControlName="marque" /></section>
+    <section class="form-section"><h2>Prix</h2><div class="form-grid">
       <div>
         <label for="price">Prix (TND)</label
         ><input id="price" type="number" step="0.001" formControlName="prix" />
@@ -45,10 +46,8 @@
           formControlName="prixPromotion"
         />
       </div>
-      <div>
-        <label for="brand">Marque</label
-        ><input id="brand" formControlName="marque" />
-      </div>
+    </div></section>
+    <section class="form-section"><h2>Dimensions</h2><div class="form-grid">
       <div>
         <label for="width">Largeur (cm)</label
         ><input
@@ -80,11 +79,12 @@
         <label for="weight">Poids (kg)</label
         ><input id="weight" type="number" step="0.01" formControlName="poids" />
       </div>
-    </div>
+    </div></section>
+    <section class="form-section"><h2>Personnalisation</h2>
     <label class="check"
       ><input type="checkbox" formControlName="personnalisable" /> Produit
       personnalisable</label
-    >
+    ></section>
     <div class="form-actions">
       <button class="button primary" type="submit" [disabled]="saving">
         {{
@@ -98,7 +98,7 @@
         Annuler
       </button>
     </div>
-    <section class="images-box" *ngIf="editing && product">
+    <section class="images-box form-section" *ngIf="editing && product">
       <h2>Images du produit</h2>
       <input
         #imageInput

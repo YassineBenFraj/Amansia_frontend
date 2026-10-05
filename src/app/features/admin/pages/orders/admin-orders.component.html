@@ -5,7 +5,7 @@
     <p class="muted">Suivez les commandes et leur avancement.</p>
   </header>
   <div class="filters">
-    <input [(ngModel)]="search" placeholder="Numéro, client ou email" /><select
+    <input [(ngModel)]="search" type="search" aria-label="Rechercher une commande" placeholder="Numéro, client ou email" /><select aria-label="Filtrer par statut"
       [(ngModel)]="status"
     >
       <option value="">Tous les statuts</option>
@@ -13,8 +13,9 @@
         {{ value }}
       </option>
     </select>
+    <input type="date" [(ngModel)]="date" aria-label="Filtrer par date">
   </div>
-  <p *ngIf="error" class="error-banner">{{ error }}</p>
+  <p *ngIf="error" class="error-banner" role="alert">{{ error }} <button type="button" (click)="load()">Réessayer</button></p>
   <div *ngIf="loading" class="loader"></div>
   <div class="table-wrap" *ngIf="!loading">
     <table>
@@ -23,6 +24,7 @@
           <th>Commande</th>
           <th>Client</th>
           <th>Date</th>
+          <th>Paiement</th>
           <th>Statut</th>
           <th>Total</th>
           <th></th>
@@ -38,11 +40,12 @@
             }}<small>{{ order.clientEmail }}</small>
           </td>
           <td>{{ order.dateCommande | date: "dd/MM/yyyy HH:mm" }}</td>
+          <td><span class="status" [attr.data-status]="paymentStatus(order)">{{ paymentStatus(order).replaceAll('_', ' ') }}</span></td>
           <td>
-            <span class="status">{{ order.statut }}</span>
+            <span class="status" [attr.data-status]="order.statut">{{ order.statut.replaceAll('_', ' ') }}</span>
           </td>
           <td>{{ order.total | tnd }}</td>
-          <td><button (click)="open(order)">Détail</button></td>
+          <td><button type="button" (click)="open(order)">Voir</button></td>
         </tr>
       </tbody>
     </table>

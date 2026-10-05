@@ -1,4 +1,8 @@
-<div class="site-shell" [class.has-compare]="((comparator.count$ | async) ?? 0) > 0" [class.compare-collapsed]="comparisonCollapsed">
+<div
+  class="site-shell"
+  [class.has-compare]="((comparator.count$ | async) ?? 0) > 0"
+  [class.compare-collapsed]="comparisonCollapsed"
+>
   <header class="site-header">
     <a class="site-brand" routerLink="/" (click)="closeMenu()">
       <img src="/images/logo.jpg" alt="" width="46" height="46" /><span
@@ -35,14 +39,24 @@
             (click)="closeMenu()"
             >Produits</a
           >
-          <a routerLink="/comparateur" routerLinkActive="active" (click)="closeMenu()">Comparer <span *ngIf="comparator.count$ | async as count">({{ count }})</span></a>
+          <a
+            routerLink="/comparateur"
+            routerLinkActive="active"
+            (click)="closeMenu()"
+            >Comparer
+            <span *ngIf="comparator.count$ | async as count"
+              >({{ count }})</span
+            ></a
+          >
           <a
             *ngIf="user.role === clientRole"
             routerLink="/favoris"
             (click)="closeMenu()"
             class="nav-icon"
             >Favoris
-            <span class="cart-count" *ngIf="favoris.count$ | async as count">{{ count }}</span></a
+            <span class="cart-count" *ngIf="favoris.count$ | async as count">{{
+              count
+            }}</span></a
           >
           <a
             *ngIf="user.role === clientRole"
@@ -50,16 +64,29 @@
             (click)="closeMenu()"
             class="nav-icon cart-link"
             aria-label="Panier"
-            ><svg class="cart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            ><svg
+              class="cart-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
               <circle cx="9" cy="20" r="1" />
               <circle cx="19" cy="20" r="1" />
-              <path d="M2 3h2l2.4 11.2a2 2 0 0 0 2 1.6h10.3a2 2 0 0 0 2-1.6L22 7H5" />
+              <path
+                d="M2 3h2l2.4 11.2a2 2 0 0 0 2 1.6h10.3a2 2 0 0 0 2-1.6L22 7H5"
+              />
             </svg>
             <span class="cart-count" *ngIf="cart.count$ | async as count">{{
               count
             }}</span></a
           >
         </ng-container>
+        <app-notification-bell *ngIf="user.role === adminRole" [admin]="true"></app-notification-bell>
+        <app-notification-bell *ngIf="user.role === clientRole"></app-notification-bell>
         <div class="profile-menu">
           <button
             type="button"
@@ -69,14 +96,35 @@
             aria-label="Menu du profil"
           >
             <span class="profile-avatar" aria-hidden="true">
-              <img *ngIf="user.photoProfil && brokenPhotoUrl !== user.photoProfil; else avatarInitials" [src]="profile.imageUrl(user.photoProfil)" (error)="brokenPhotoUrl = user.photoProfil" alt="">
-              <ng-template #avatarInitials>{{ initials(user.prenom, user.nom) }}</ng-template>
-            </span><span class="profile-name">{{ user.prenom || "Profil" }}</span
+              <img
+                *ngIf="
+                  user.photoProfil && brokenPhotoUrl !== user.photoProfil;
+                  else avatarInitials
+                "
+                [src]="profile.imageUrl(user.photoProfil)"
+                (error)="brokenPhotoUrl = user.photoProfil"
+                alt=""
+              />
+              <ng-template #avatarInitials>{{
+                initials(user.prenom, user.nom)
+              }}</ng-template> </span
+            ><span class="profile-name">{{ user.prenom || "Profil" }}</span
             ><span aria-hidden="true">⌄</span>
           </button>
           <div class="profile-dropdown" *ngIf="profileOpen">
-            <a [routerLink]="user.role === clientRole ? '/profil' : '/mon-compte'" (click)="closeMenu()">Profil</a>
-            <a *ngIf="user.role === clientRole" routerLink="/mes-commandes" (click)="closeMenu()">Mes commandes</a>
+            <a
+              [routerLink]="
+                user.role === clientRole ? '/profil' : '/mon-compte'
+              "
+              (click)="closeMenu()"
+              >Profil</a
+            >
+            <a
+              *ngIf="user.role === clientRole"
+              routerLink="/mes-commandes"
+              (click)="closeMenu()"
+              >Mes commandes</a
+            >
             <button type="button" (click)="logout()">Déconnexion</button>
           </div>
         </div>
@@ -84,7 +132,12 @@
       <ng-template #visitorLinks>
         <a routerLink="/" (click)="closeMenu()">Accueil</a>
         <a routerLink="/produits" (click)="closeMenu()">Produits</a>
-        <a routerLink="/comparateur" (click)="closeMenu()">Comparer <span *ngIf="comparator.count$ | async as count">({{ count }})</span></a>
+        <a routerLink="/comparateur" (click)="closeMenu()"
+          >Comparer
+          <span *ngIf="comparator.count$ | async as count"
+            >({{ count }})</span
+          ></a
+        >
         <a routerLink="/auth/login" (click)="closeMenu()">Connexion</a>
         <a routerLink="/auth/register" class="nav-cta" (click)="closeMenu()"
           >Inscription</a
@@ -94,7 +147,9 @@
   </header>
 
   <div class="site-content"><router-outlet></router-outlet></div>
-  <app-comparison-bar (collapsedChange)="comparisonCollapsed = $event"></app-comparison-bar>
+  <app-comparison-bar
+    (collapsedChange)="comparisonCollapsed = $event"
+  ></app-comparison-bar>
 
   <footer class="site-footer">
     <ng-container *ngIf="auth.user$ | async as user; else visitorLinks">
@@ -116,7 +171,6 @@
       <ng-container *ngIf="user.role !== clientRole">
         <p>© 2026 Amansia. Tous droits réservés.</p>
       </ng-container>
-
-    </ng-container>  
+    </ng-container>
   </footer>
 </div>

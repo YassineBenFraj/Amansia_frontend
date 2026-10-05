@@ -24,6 +24,7 @@
       </div>
     </header>
     <p *ngIf="message" class="notice">{{ message }}</p>
+    <div class="order-progress" *ngIf="order.statut !== 'ANNULEE'" aria-label="Progression de la commande"><span *ngFor="let step of progress" [class.reached]="reached(step)">{{ step.replaceAll('_', ' ') }}</span></div>
     <div class="detail-grid">
       <article>
         <h2>Client</h2>
@@ -62,6 +63,9 @@
         ><strong>{{ line.prixTotal | tnd }}</strong>
       </div>
       <div class="totals">
+        <p><span>Sous-total</span><strong>{{ order.sousTotal | tnd }}</strong></p>
+        <p><span>Livraison</span><strong>{{ (order.fraisLivraison || 0) | tnd }}</strong></p>
+        <p *ngIf="order.remise"><span>Remise</span><strong>− {{ order.remise | tnd }}</strong></p>
         <p>
           <span>Total</span><strong>{{ order.total | tnd }}</strong>
         </p>

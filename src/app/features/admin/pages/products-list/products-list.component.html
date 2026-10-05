@@ -1,48 +1,35 @@
-<section class="admin-page">
+<section class="admin-page products-page">
   <header class="page-heading">
-    <div>
-      <p class="eyebrow">CATALOGUE</p>
-      <h1>Produits</h1>
-      <p class="muted">Consultez et administrez les produits de la boutique.</p>
-    </div>
-    <button class="button primary" type="button" (click)="create()">
-      Ajouter un produit
-    </button>
+    <div><p class="eyebrow">CATALOGUE</p><h1>Produits</h1><p class="muted">Gérez les articles du catalogue Amansia.</p></div>
+    <button class="button primary" type="button" (click)="create()">+ Ajouter un produit</button>
   </header>
-  <input
-    class="search"
-    [(ngModel)]="search"
-    [ngModelOptions]="{ standalone: true }"
-    placeholder="Rechercher par nom, marque ou catégorie"
-  />
-  <p *ngIf="error" class="error-banner" role="alert">{{ error }}</p>
-  <p *ngIf="message" class="notice" role="status">{{ message }}</p>
-  <div *ngIf="loading" class="loader"></div>
-  <div class="data-panel" *ngIf="!loading">
-    <div *ngIf="!filteredProducts.length" class="empty">
-      Aucun produit trouvé.
-    </div>
-    <article class="data-row" *ngFor="let product of filteredProducts">
-      <div>
-        <strong>{{ product.nom }}</strong
-        ><span>{{ product.categorieNom }} · {{ product.prix | tnd }}</span>
-      </div>
-      <span class="status" [class.off]="!product.actif">{{
-        product.actif ? "Actif" : "Inactif"
-      }}</span>
-      <div class="row-actions">
-        <button type="button" (click)="edit(product)">Détail / modifier</button
-        ><button type="button" (click)="toggle(product)">
-          {{ product.actif ? "Désactiver" : "Activer" }}</button
-        ><button
-          *ngIf="product.actif"
-          type="button"
-          class="danger"
-          (click)="remove(product)"
-        >
-          Supprimer
-        </button>
-      </div>
-    </article>
+
+  <div class="filters product-filters">
+    <input type="search" [(ngModel)]="search" placeholder="Rechercher un produit, une marque…" aria-label="Rechercher un produit">
+    <select [(ngModel)]="category" aria-label="Filtrer par catégorie"><option value="">Toutes les catégories</option><option *ngFor="let item of categories" [value]="item.id">{{ item.nom }}</option></select>
+    <select [(ngModel)]="status" aria-label="Filtrer par statut"><option value="">Tous les statuts</option><option value="true">Actifs</option><option value="false">Inactifs</option></select>
+    <select *ngIf="availabilityReady" [(ngModel)]="availability" aria-label="Filtrer par disponibilité"><option value="">Toute disponibilité</option><option value="disponible">Disponibles</option><option value="indisponible">Ruptures et sans variante</option></select>
   </div>
+
+  <p *ngIf="error" class="error-banner" role="alert">{{ error }} <button type="button" (click)="load()">Réessayer</button></p>
+  <p *ngIf="message" class="notice" role="status">{{ message }}</p>
+  <div *ngIf="loading" class="loader" role="status" aria-label="Chargement des produits"></div>
+
+  <div class="table-wrap" *ngIf="!loading && !error">
+    <table>
+      <thead><tr><th>Produit</th><th>Catégorie</th><th>Prix</th><th *ngIf="availabilityReady">Disponibilité</th><th>Statut</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let product of filteredProducts">
+          <td><div class="product-cell"><img [src]="imageUrl(product)" alt="" loading="lazy"><strong>{{ product.nom }}</strong></div></td>
+          <td>{{ product.categorieNom }}</td>
+          <td><strong>{{ (product.prixPromotion ?? product.prix) | tnd }}</strong><small *ngIf="product.prixPromotion !== null"><del>{{ product.prix | tnd }}</del></small></td>
+          <td *ngIf="availabilityReady"><span class="status" [class.off]="availabilityState(product) !== 'disponible'">{{ availabilityLabel(product) }}</span></td>
+          <td><span class="status" [class.off]="!product.actif">{{ product.actif ? 'Actif' : 'Inactif' }}</span></td>
+          <td><div class="row-actions"><button type="button" (click)="view(product)">Voir</button><button type="button" (click)="edit(product)">Modifier</button><details class="actions-menu"><summary aria-label="Autres actions sur le produit">⋮</summary><div><button type="button" (click)="toggle(product)">{{ product.actif ? 'Désactiver' : 'Activer' }}</button><button *ngIf="product.actif" type="button" class="danger" (click)="remove(product)">Supprimer</button></div></details></div></td>
+        </tr>
+      </tbody>
+    </table>
+    <p *ngIf="!filteredProducts.length" class="empty">Aucun produit trouvé.</p>
+  </div>
+  <p class="list-count" *ngIf="!loading && !error">{{ filteredProducts.length }} produit(s) affiché(s)</p>
 </section>

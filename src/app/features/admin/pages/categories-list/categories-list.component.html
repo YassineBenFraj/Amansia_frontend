@@ -9,12 +9,13 @@
       Ajouter une catégorie
     </button>
   </header>
+  <div class="filters"><input type="search" [(ngModel)]="search" placeholder="Rechercher une catégorie…" aria-label="Rechercher une catégorie"><select [(ngModel)]="status" aria-label="Filtrer par statut"><option value="">Tous les statuts</option><option value="true">Actives</option><option value="false">Inactives</option></select></div>
   <p *ngIf="error" class="error-banner" role="alert">{{ error }}</p>
   <p *ngIf="message" class="notice" role="status">{{ message }}</p>
   <div *ngIf="loading" class="loader"></div>
   <div class="data-panel" *ngIf="!loading">
-    <div *ngIf="!categories.length" class="empty">Aucune catégorie.</div>
-    <article class="data-row" *ngFor="let category of categories">
+    <div *ngIf="!filtered.length" class="empty">Aucune catégorie trouvée.</div>
+    <article class="data-row" *ngFor="let category of filtered">
       <div>
         <strong>{{ category.nom }}</strong
         ><span>{{ category.description || "Sans description" }}</span>

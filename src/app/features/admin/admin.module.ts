@@ -8,6 +8,7 @@ import { CategoriesListComponent } from './pages/categories-list/categories-list
 import { CategoryFormComponent } from './pages/category-form/category-form.component';
 import { ProductsListComponent } from './pages/products-list/products-list.component';
 import { ProductFormComponent } from './pages/product-form/product-form.component';
+import { ProductDetailComponent } from './pages/product-detail/product-detail.component';
 import { AdminPlaceholderComponent } from './pages/placeholder/admin-placeholder.component';
 import { AdminOrdersComponent } from './pages/orders/admin-orders.component';
 import { AdminOrderDetailComponent } from './pages/order-detail/admin-order-detail.component';
@@ -19,6 +20,7 @@ import { AdminReviewDetailComponent } from './pages/review-detail/admin-review-d
 import { AdminUserFormComponent } from './pages/user-form/admin-user-form.component';
 import { AdminStocksComponent } from './pages/stocks/admin-stocks.component';
 import { AdminStockMovementsComponent } from './pages/stock-movements/admin-stock-movements.component';
+import { AdminNotificationsComponent } from './pages/notifications/admin-notifications.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +30,7 @@ import { AdminStockMovementsComponent } from './pages/stock-movements/admin-stoc
     CategoryFormComponent,
     ProductsListComponent,
     ProductFormComponent,
+    ProductDetailComponent,
     AdminPlaceholderComponent,
     AdminOrdersComponent,
     AdminOrderDetailComponent,
@@ -39,6 +42,7 @@ import { AdminStockMovementsComponent } from './pages/stock-movements/admin-stoc
     AdminUserFormComponent,
     AdminStocksComponent,
     AdminStockMovementsComponent,
+    AdminNotificationsComponent,
   ],
   imports: [SharedModule, FormsModule, ReactiveFormsModule, AdminRoutingModule],
 })

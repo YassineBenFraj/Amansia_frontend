@@ -14,7 +14,7 @@ describe('AuthService', () => {
   let session: jasmine.SpyObj<SessionService>;
   const user: Utilisateur = {
     id: 1, nom: 'Test', prenom: 'Client', email: 'client@example.test', telephone: null,
-    dateNaissance: null, role: Role.CLIENT, actif: true, dateCreation: null, dateModification: null
+    photoProfil: null, dateNaissance: null, role: Role.CLIENT, actif: true, dateCreation: null, dateModification: null
   };
 
   beforeEach(() => {
