@@ -7,6 +7,8 @@ import { Role } from './core/models/role';
 import { PublicLayoutComponent } from './shared/components/public-layout/public-layout.component';
 
 const routes: Routes = [
+  { path: 'mot-de-passe-oublie', redirectTo: 'auth/mot-de-passe-oublie', pathMatch: 'full' },
+  { path: 'reinitialiser-mot-de-passe', redirectTo: 'auth/reinitialiser-mot-de-passe', pathMatch: 'full' },
   {
     path: 'auth',
     loadChildren: () =>

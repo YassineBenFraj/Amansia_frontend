@@ -42,6 +42,14 @@ export class AuthService {
   register(request: RegisterRequest): Observable<Utilisateur> {
     return this.authenticate('register', request);
   }
+
+  demanderReinitialisation(email: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${environment.apiUrl}/auth/mot-de-passe-oublie`, { email });
+  }
+
+  reinitialiserMotDePasse(request: { token: string; nouveauMotDePasse: string; confirmationMotDePasse: string }): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${environment.apiUrl}/auth/reinitialiser-mot-de-passe`, request);
+  }
   getToken(): string | null {
     return this.session.getToken();
   }
