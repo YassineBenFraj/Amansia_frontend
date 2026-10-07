@@ -21,6 +21,8 @@ import { AdminUserFormComponent } from './pages/user-form/admin-user-form.compon
 import { AdminStocksComponent } from './pages/stocks/admin-stocks.component';
 import { AdminStockMovementsComponent } from './pages/stock-movements/admin-stock-movements.component';
 import { AdminNotificationsComponent } from './pages/notifications/admin-notifications.component';
+import { AdminPromotionsComponent } from './pages/promotions/admin-promotions.component';
+import { AdminCodesPromoComponent } from './pages/codes-promo/admin-codes-promo.component';
 
 const routes: Routes = [
   {
@@ -32,6 +34,8 @@ const routes: Routes = [
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
       { path: 'dashboard', component: AdminDashboardComponent },
       { path: 'notifications', component: AdminNotificationsComponent },
+      { path: 'promotions', component: AdminPromotionsComponent },
+      { path: 'codes-promo', component: AdminCodesPromoComponent },
       { path: 'categories', component: CategoriesListComponent },
       { path: 'categories/nouveau', component: CategoryFormComponent },
       { path: 'categories/:id', component: CategoryFormComponent },

@@ -47,6 +47,7 @@ export class OrderDetailComponent {
 
   image(line: LigneCommande): string { return this.images.get(line.produitId) || this.catalogue.imageUrl(null); }
   get paymentLabel(): string {
+    if (this.order?.total === 0) return 'Aucun paiement nécessaire';
     switch (this.payment?.statut) {
       case 'PAYE': return 'Payé';
       case 'EN_ATTENTE': return 'En attente';

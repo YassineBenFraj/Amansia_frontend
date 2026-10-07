@@ -14,7 +14,7 @@
         </article>
         <button type="button" class="clear-cart" (click)="clear()" [disabled]="clearing" [attr.aria-busy]="clearing">{{ clearing ? 'Vidage…' : 'Vider le panier' }}</button>
       </section>
-      <aside class="cart-summary"><h2>Récapitulatif</h2><div><span>Total</span><strong>{{ currentCart.totalGeneral | tnd }}</strong></div><button type="button" class="button primary checkout-button" (click)="prepareCheckout()">Passer la commande <span>→</span></button><p *ngIf="message" class="notice" role="status">{{ message }}</p><small>Les prix et le total sont confirmés par Amansia.</small></aside>
+      <aside class="cart-summary"><h2>Récapitulatif</h2><div *ngIf="currentCart.remiseProduits"><span>Prix avant promotions</span><strong>{{ currentCart.sousTotalAvantPromotion | tnd }}</strong></div><div *ngIf="currentCart.remiseProduits"><span>Promotions produits</span><strong>-{{ currentCart.remiseProduits | tnd }}</strong></div><div><span>Total</span><strong>{{ currentCart.totalGeneral | tnd }}</strong></div><button type="button" class="button primary checkout-button" (click)="prepareCheckout()">Passer la commande <span>→</span></button><p *ngIf="message" class="notice" role="status">{{ message }}</p><small>Les prix et le total sont confirmés par Amansia.</small></aside>
     </div>
   </ng-container>
 </main>

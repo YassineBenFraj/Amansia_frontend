@@ -63,9 +63,10 @@
         ><strong>{{ line.prixTotal | tnd }}</strong>
       </div>
       <div class="totals">
+        <p *ngIf="order.remiseProduits"><span>Avant promotions</span><strong>{{ order.sousTotalAvantPromotion | tnd }}</strong></p>
+        <p *ngIf="order.remiseProduits"><span>Promotions produits</span><strong>− {{ order.remiseProduits | tnd }}</strong></p>
         <p><span>Sous-total</span><strong>{{ order.sousTotal | tnd }}</strong></p>
-        <p><span>Livraison</span><strong>{{ (order.fraisLivraison || 0) | tnd }}</strong></p>
-        <p *ngIf="order.remise"><span>Remise</span><strong>− {{ order.remise | tnd }}</strong></p>
+        <p *ngIf="order.remise"><span>Code {{ order.codePromo }}</span><strong>− {{ order.remise | tnd }}</strong></p>
         <p>
           <span>Total</span><strong>{{ order.total | tnd }}</strong>
         </p>
@@ -80,7 +81,7 @@
         ><span>{{ p.statut }}</span
         ><strong>{{ p.montant | tnd }}</strong>
       </div>
-      <p class="muted" *ngIf="!payments.length">Aucun paiement associé.</p>
+      <p class="muted" *ngIf="!payments.length">{{ order.total === 0 ? 'Aucun paiement nécessaire.' : 'Aucun paiement associé.' }}</p>
     </article></ng-container
   >
 </section>

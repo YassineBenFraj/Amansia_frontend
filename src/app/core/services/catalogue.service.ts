@@ -28,6 +28,19 @@ export class CatalogueService {
     return this.http.get<Produit[]>(`${this.api}/produits`);
   }
 
+  bornesPrix(): Observable<{ minimum: number | null; maximum: number | null }> {
+    return this.http.get<{ minimum: number | null; maximum: number | null }>(`${this.api}/produits/bornes-prix`);
+  }
+
+  filtrerProduits(filtres: { nom?: string; categorie?: number | null; prixMin?: number | null; prixMax?: number | null }): Observable<Produit[]> {
+    let params = new HttpParams();
+    if (filtres.nom?.trim()) params = params.set('nom', filtres.nom.trim());
+    if (filtres.categorie != null) params = params.set('categorie', filtres.categorie);
+    if (filtres.prixMin != null) params = params.set('prixMin', filtres.prixMin);
+    if (filtres.prixMax != null) params = params.set('prixMax', filtres.prixMax);
+    return this.http.get<Produit[]>(`${this.api}/produits`, { params });
+  }
+
   produitsAdmin(): Observable<Produit[]> { return this.http.get<Produit[]>(`${this.api}/produits/admin`); }
   creerProduit(request: ProduitRequest): Observable<Produit> { return this.http.post<Produit>(`${this.api}/produits`, request); }
   modifierProduit(id: number, request: ProduitRequest): Observable<Produit> { return this.http.put<Produit>(`${this.api}/produits/${id}`, request); }

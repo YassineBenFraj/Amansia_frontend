@@ -31,7 +31,6 @@ export class ProductFormComponent {
     nom: ['', [Validators.required, Validators.maxLength(200)]],
     description: [''],
     prix: [0, [Validators.required, Validators.min(0.01)]],
-    prixPromotion: [null as number | null, Validators.min(0)],
     marque: [''],
     largeur: [null as number | null],
     hauteur: [null as number | null],
@@ -84,7 +83,6 @@ export class ProductFormComponent {
             nom: product.nom,
             description: product.description || '',
             prix: product.prix,
-            prixPromotion: product.prixPromotion,
             marque: product.marque || '',
             largeur: product.largeur,
             hauteur: product.hauteur,
@@ -108,7 +106,6 @@ export class ProductFormComponent {
     const raw = this.form.getRawValue();
     const request: ProduitRequest = {
       ...raw,
-      prixPromotion: raw.prixPromotion || null,
     };
     const call$ = this.editing
       ? this.catalogue.modifierProduit(this.product!.id, request)

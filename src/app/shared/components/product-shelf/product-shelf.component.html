@@ -49,7 +49,7 @@
         <span *ngIf="item.produit.disponible === false" class="shelf-stock"
           >Rupture de stock</span
         >
-        <span *ngIf="item.produit.prixPromotion" class="badge">Promotion</span>
+        <span *ngIf="item.produit.prixPromotion != null" class="badge">Promotion</span>
       </a>
       <div class="product-info">
         <p>{{ item.produit.categorieNom }}</p>
@@ -62,7 +62,7 @@
           <strong>{{
             item.produit.prixPromotion ?? item.produit.prix | tnd
           }}</strong
-          ><del *ngIf="item.produit.prixPromotion">{{
+          ><del *ngIf="item.produit.prixPromotion != null">{{
             item.produit.prix | tnd
           }}</del>
         </div>

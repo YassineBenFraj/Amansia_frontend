@@ -36,6 +36,7 @@ export class OrdersComponent {
   }
 
   paymentLabel(order: Commande): string {
+    if (order.total === 0) return 'Aucun paiement nécessaire';
     const status = this.payments.get(order.id)?.statut;
     return status === 'PAYE' ? 'Payé' : status === 'ECHOUE' ? 'Échec' : status === 'EN_ATTENTE' ? 'En attente' : status === 'REMBOURSE' ? 'Remboursé' : 'Non disponible';
   }

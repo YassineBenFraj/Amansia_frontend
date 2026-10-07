@@ -11,6 +11,8 @@ import { CatalogueService } from '../../../../core/services/catalogue.service';
 import { httpErrorMessage } from '../../../../core/services/http-error';
 import { PanierService } from '../../../../core/services/panier.service';
 import { PaiementService } from '../../../../core/services/paiement.service';
+import { MarketingService } from '../../../../core/services/marketing.service';
+import { CodePromoQuote } from '../../../../core/models/marketing';
 
 @Component({
   selector: 'app-checkout',
@@ -27,6 +29,7 @@ export class CheckoutComponent {
   private readonly fb = inject(FormBuilder);
   private readonly destroyRef = inject(DestroyRef);
   private readonly paiementService = inject(PaiementService);
+  private readonly marketing = inject(MarketingService);
 
   cart?: Panier;
   addresses: Adresse[] = [];
@@ -36,6 +39,9 @@ export class CheckoutComponent {
   submitting = false;
   paymentModalOpen = false; clientSecret = ''; publishableKey = '';
   error = '';
+  promoInput = '';
+  promoQuote: CodePromoQuote | null = null;
+  validatingPromo = false;
   readonly form = this.fb.nonNullable.group({ commentaire: [''] });
 
   constructor() {
@@ -65,23 +71,49 @@ export class CheckoutComponent {
   selectAddress(address: Adresse): void { this.selectedAddressId = address.id; }
   productImage(id: number): string { return this.catalogue.imageUrl(this.images.get(id)); }
 
+  applyPromo(): void {
+    if (this.validatingPromo || !this.promoInput.trim()) return;
+    this.validatingPromo = true; this.error = '';
+    this.marketing.validateCode(this.promoInput.trim()).pipe(finalize(() => this.validatingPromo = false), takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: quote => { this.promoQuote = quote; this.promoInput = quote.code || ''; this.clientSecret = ''; },
+      error: error => { this.promoQuote = null; this.error = httpErrorMessage(error); }
+    });
+  }
+
+  removePromo(): void { this.promoQuote = null; this.promoInput = ''; this.clientSecret = ''; this.error = ''; }
+
   submit(): void {
     if (this.submitting || !this.cart?.lignes.length || !this.selectedAddressId) return;
+    if ((this.promoQuote?.total ?? this.cart.totalGeneral) === 0) {
+      this.submitting = true; this.error = '';
+      this.paiementService.finaliserCommandeOfferte(this.selectedAddressId, this.form.controls.commentaire.value.trim() || undefined, this.promoQuote?.code || undefined)
+        .pipe(finalize(() => this.submitting = false), takeUntilDestroyed(this.destroyRef)).subscribe({
+          next: order => { this.cartService.reset(); void this.router.navigate(['/checkout/confirmation'], { queryParams: { orderId: order.id } }); },
+          error: error => this.error = httpErrorMessage(error)
+        });
+      return;
+    }
     if (this.clientSecret) { this.paymentModalOpen = true; return; }
     this.submitting = true;
     this.error = '';
-    this.paiementService.preparer().pipe(finalize(() => { this.submitting = false; }), takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: preparation => { this.clientSecret = preparation.clientSecret; this.publishableKey = preparation.publishableKey; this.paymentModalOpen = true; },
+    this.paiementService.preparer(this.promoQuote?.code || undefined).pipe(finalize(() => { this.submitting = false; }), takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: preparation => {
+        this.clientSecret = preparation.clientSecret; this.publishableKey = preparation.publishableKey;
+        if (preparation.codePromo) this.promoQuote = { codePromoId: null, code: preparation.codePromo,
+          sousTotal: preparation.sousTotal, reduction: preparation.remise, total: preparation.total };
+        this.cartService.obtenir().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({ next: cart => this.cart = cart });
+        this.paymentModalOpen = true;
+      },
       error: error => { this.error = httpErrorMessage(error); }
     });
   }
   paymentCompleted(paymentIntentId: string): void {
     if (!this.selectedAddressId || this.submitting) return;
     this.submitting = true; this.error = '';
-    this.paiementService.finaliser(paymentIntentId, this.selectedAddressId, this.form.controls.commentaire.value.trim() || undefined).pipe(finalize(() => { this.submitting = false; }), takeUntilDestroyed(this.destroyRef)).subscribe({
+    this.paiementService.finaliser(paymentIntentId, this.selectedAddressId, this.form.controls.commentaire.value.trim() || undefined, this.promoQuote?.code || undefined).pipe(finalize(() => { this.submitting = false; }), takeUntilDestroyed(this.destroyRef)).subscribe({
       next: payment => { if (payment.statut === 'PAYE') { this.paymentModalOpen = false; this.cartService.reset(); void this.router.navigate(['/checkout/confirmation'], { queryParams: { orderId: payment.commandeId, paymentId: payment.id } }); } else this.error = 'Le paiement est encore en cours de confirmation.'; },
       error: error => { this.error = httpErrorMessage(error); }
     });
   }
-  paymentClosed(): void { this.paymentModalOpen = false; this.error = ''; }
+  paymentClosed(): void { this.paymentModalOpen = false; this.clientSecret = ''; this.publishableKey = ''; this.error = ''; }
 }

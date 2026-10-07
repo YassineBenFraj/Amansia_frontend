@@ -33,11 +33,39 @@
       </button>
     </div>
   </div>
+  <form class="price-filter" (submit)="$event.preventDefault(); applyPrice()" aria-label="Filtrer par prix">
+    <div class="price-filter-heading">
+      <div><strong>Prix</strong><span>Prix actuel du produit, promotions comprises</span></div>
+      <button type="button" class="price-clear" *ngIf="appliedPrice.min != null || appliedPrice.max != null" (click)="clearPrice()">Effacer le prix</button>
+    </div>
+    <div class="price-range" *ngIf="priceBounds && rangeEnd > rangeStart">
+      <div class="price-range-values"><strong>{{ (minPriceControl.value ?? rangeStart) | tnd }}</strong><strong>{{ (maxPriceControl.value ?? rangeEnd) | tnd }}</strong></div>
+      <div class="price-range-rail">
+        <div class="price-range-track" [style.--range-start]="minPosition + '%'" [style.--range-end]="maxPosition + '%'" aria-hidden="true"></div>
+        <div class="price-range-inputs">
+          <input type="range" class="range-min" [class.range-min-front]="minPosition >= maxPosition - 1 && minPosition > 1" [min]="rangeStart" [max]="rangeEnd" step="any" [value]="minPriceControl.value ?? rangeStart"
+            [attr.aria-valuetext]="(minPriceControl.value ?? rangeStart) | tnd" aria-label="Prix minimum" (input)="onRangeInput('min', $event)" (change)="applyPrice()" />
+          <input type="range" class="range-max" [min]="rangeStart" [max]="rangeEnd" step="any" [value]="maxPriceControl.value ?? rangeEnd"
+            [attr.aria-valuetext]="(maxPriceControl.value ?? rangeEnd) | tnd" aria-label="Prix maximum" (input)="onRangeInput('max', $event)" (change)="applyPrice()" />
+        </div>
+      </div>
+    </div>
+    <div class="price-filter-fields">
+      <label>Minimum <span class="price-input"><input type="number" min="0" step="0.001" inputmode="decimal" [formControl]="minPriceControl" placeholder="0" aria-label="Prix minimum en dinars tunisiens" /><span>DT</span></span></label>
+      <label>Maximum <span class="price-input"><input type="number" min="0" step="0.001" inputmode="decimal" [formControl]="maxPriceControl" placeholder="Sans limite" aria-label="Prix maximum en dinars tunisiens" /><span>DT</span></span></label>
+      <button type="submit" class="button secondary price-apply">Appliquer</button>
+    </div>
+    <p class="price-error" *ngIf="priceError" role="alert">{{ priceError }}</p>
+  </form>
   <div class="catalogue-meta" *ngIf="!loading">
     <span
       >{{ produits.length }}
       {{ produits.length > 1 ? "produits" : "produit" }}</span
     ><span *ngIf="searchControl.value">pour « {{ searchControl.value }} »</span>
+    <span class="price-chip" *ngIf="appliedPrice.min != null || appliedPrice.max != null">
+      {{ appliedPrice.min != null ? (appliedPrice.min | tnd) : '0 DT' }} – {{ appliedPrice.max != null ? (appliedPrice.max | tnd) : 'sans maximum' }}
+      <button type="button" (click)="clearPrice()" aria-label="Retirer le filtre de prix">×</button>
+    </span>
   </div>
   <div *ngIf="loading" class="loading-grid catalogue-skeleton" role="status" aria-label="Chargement des produits">
     <div class="skeleton-card" *ngFor="let item of [1, 2, 3, 4, 5, 6]">
@@ -67,7 +95,7 @@
           [src]="productImage(produit.id)"
           [alt]="produit.nom"
           loading="lazy"
-        /><span *ngIf="produit.disponible === false" class="stock-badge">Rupture de stock</span><span *ngIf="produit.prixPromotion" class="badge">Promotion</span
+        /><span *ngIf="produit.disponible === false" class="stock-badge">Rupture de stock</span><span *ngIf="produit.prixPromotion != null" class="badge">Promotion</span
         ><span class="view-product">Voir le produit</span></a
       >
       <div class="product-info">
@@ -76,8 +104,8 @@
           <a [routerLink]="[produit.id]">{{ produit.nom }}</a>
         </h2>
         <div class="price">
-          <strong>{{ produit.prixPromotion || produit.prix | tnd }}</strong
-          ><del *ngIf="produit.prixPromotion">{{ produit.prix | tnd }}</del>
+          <strong>{{ produit.prixPromotion ?? produit.prix | tnd }}</strong
+          ><del *ngIf="produit.prixPromotion != null">{{ produit.prix | tnd }}</del>
         </div>
         <button type="button" class="compare-action" [class.selected]="comparator.has(produit.id)" [attr.aria-pressed]="comparator.has(produit.id)" (click)="comparator.toggle(produit)">
           {{ comparator.has(produit.id) ? '✓ À comparer' : 'Comparer' }}
@@ -90,12 +118,12 @@
     <span>{{ visibleCount }} sur {{ produits.length }}</span>
   </div>
   <div class="empty-state" *ngIf="!loading && !error && !produits.length">
-    <strong>Aucun produit trouvé</strong>
-    <p>Essayez une autre recherche ou consultez toutes nos collections.</p>
+    <strong>Aucun produit ne correspond à vos critères.</strong>
+    <p>Essayez un autre prix, une autre recherche ou une autre catégorie.</p>
     <button
       type="button"
       class="button secondary"
-      (click)="searchControl.setValue(''); selectCategory(null)"
+      (click)="resetFilters()"
     >
       Réinitialiser les filtres
     </button>

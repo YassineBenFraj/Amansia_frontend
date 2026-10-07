@@ -74,9 +74,12 @@
         </div>
       </div>
       <div class="order-totals">
+        <div *ngIf="current.remiseProduits"><span>Avant promotions</span><strong>{{ current.sousTotalAvantPromotion | tnd }}</strong></div>
+        <div *ngIf="current.remiseProduits"><span>Promotions produits</span><strong>− {{ current.remiseProduits | tnd }}</strong></div>
         <div>
           <span>Sous-total</span><strong>{{ current.sousTotal | tnd }}</strong>
         </div>
+        <div *ngIf="current.remise"><span>Code {{ current.codePromo }}</span><strong>− {{ current.remise | tnd }}</strong></div>
         <div class="grand-total">
           <span>Total</span><strong>{{ current.total | tnd }}</strong>
         </div>

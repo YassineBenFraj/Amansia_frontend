@@ -21,6 +21,8 @@ import { AdminUserFormComponent } from './pages/user-form/admin-user-form.compon
 import { AdminStocksComponent } from './pages/stocks/admin-stocks.component';
 import { AdminStockMovementsComponent } from './pages/stock-movements/admin-stock-movements.component';
 import { AdminNotificationsComponent } from './pages/notifications/admin-notifications.component';
+import { AdminPromotionsComponent } from './pages/promotions/admin-promotions.component';
+import { AdminCodesPromoComponent } from './pages/codes-promo/admin-codes-promo.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +45,8 @@ import { AdminNotificationsComponent } from './pages/notifications/admin-notific
     AdminStocksComponent,
     AdminStockMovementsComponent,
     AdminNotificationsComponent,
+    AdminPromotionsComponent,
+    AdminCodesPromoComponent,
   ],
   imports: [SharedModule, FormsModule, ReactiveFormsModule, AdminRoutingModule],
 })

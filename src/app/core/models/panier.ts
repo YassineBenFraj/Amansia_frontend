@@ -13,6 +13,8 @@ export interface Panier {
   id: number;
   lignes: LignePanier[];
   totalGeneral: number;
+  sousTotalAvantPromotion?: number;
+  remiseProduits?: number;
 }
 
 export interface AjouterLignePanierRequest {

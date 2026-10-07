@@ -19,6 +19,7 @@ export class AdminLayoutComponent {
     { label: 'Catalogue', links: [{ label: 'Produits', path: '/admin/produits', icon: 'products' }, { label: 'Catégories', path: '/admin/categories', icon: 'categories' }] },
     { label: 'Ventes', links: [{ label: 'Commandes', path: '/admin/commandes', icon: 'orders' }, { label: 'Paiements', path: '/admin/paiements', icon: 'payments' }] },
     { label: 'Inventaire', links: [{ label: 'Stocks', path: '/admin/stocks', icon: 'stock' }] },
+    { label: 'Marketing', links: [{ label: 'Promotions', path: '/admin/promotions', icon: 'promotions' }, { label: 'Codes promo', path: '/admin/codes-promo', icon: 'codes' }] },
     { label: 'Communauté', links: [{ label: 'Utilisateurs', path: '/admin/utilisateurs', icon: 'users' }, { label: 'Avis', path: '/admin/avis', icon: 'reviews' }] },
     { label: 'Système', links: [{ label: 'Notifications', path: '/admin/notifications', icon: 'notifications' }] },
   ];

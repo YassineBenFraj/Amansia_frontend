@@ -13,8 +13,11 @@ export interface Commande {
   dateCommande: string;
   statut: string;
   sousTotal: number;
+  sousTotalAvantPromotion?: number;
   fraisLivraison?: number;
   remise: number;
+  remiseProduits?: number;
+  codePromo?: string | null;
   total: number;
   commentaire: string | null;
   lignes: LigneCommande[];

@@ -90,7 +90,7 @@
           </button>
           <a [routerLink]="['/produits', produit.id]" class="product-image"
             ><img appImageFallback [src]="productImage(produit.id)" [alt]="produit.nom" loading="lazy" /><span
-              *ngIf="produit.prixPromotion"
+              *ngIf="produit.prixPromotion != null"
               class="badge"
               >Promotion</span
             ></a
@@ -101,8 +101,8 @@
               <a [routerLink]="['/produits', produit.id]">{{ produit.nom }}</a>
             </h3>
             <div class="price">
-              <strong>{{ produit.prixPromotion || produit.prix | tnd }}</strong
-              ><del *ngIf="produit.prixPromotion">{{ produit.prix | tnd }}</del>
+              <strong>{{ produit.prixPromotion ?? produit.prix | tnd }}</strong
+              ><del *ngIf="produit.prixPromotion != null">{{ produit.prix | tnd }}</del>
             </div>
           </div>
         </article>

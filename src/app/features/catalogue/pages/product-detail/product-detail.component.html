@@ -29,9 +29,9 @@
       <h1>{{ item.nom }}</h1>
       <p class="product-brand" *ngIf="item.marque">Par {{ item.marque }}</p>
       <div class="detail-price">
-        <strong>{{ item.prixPromotion || item.prix | tnd }}</strong
-        ><del *ngIf="item.prixPromotion">{{ item.prix | tnd }}</del
-        ><span *ngIf="item.prixPromotion">Prix promotionnel</span>
+        <strong>{{ item.prixPromotion ?? item.prix | tnd }}</strong
+        ><del *ngIf="item.prixPromotion != null">{{ item.prix | tnd }}</del
+        ><span *ngIf="item.prixPromotion != null">Prix promotionnel</span>
       </div>
       <p class="product-description">
         {{

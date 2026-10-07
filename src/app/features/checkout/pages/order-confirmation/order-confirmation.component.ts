@@ -17,14 +17,16 @@ export class OrderConfirmationComponent {
   constructor() {
     const orderId = Number(this.route.snapshot.queryParamMap.get('orderId'));
     const paymentId = Number(this.route.snapshot.queryParamMap.get('paymentId'));
-    if (!orderId || !paymentId) { this.loading = false; this.error = 'Commande introuvable.'; return; }
+    if (!orderId) { this.loading = false; this.error = 'Commande introuvable.'; return; }
     this.orders.detail(orderId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: order => { this.order = order; this.payments.obtenir(paymentId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: order => { this.order = order; if (!paymentId && order.total === 0) { this.cart.reset(); this.loading = false; return; }
+        if (!paymentId) { this.error = 'Paiement introuvable.'; this.loading = false; return; }
+        this.payments.obtenir(paymentId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: payment => { this.payment = payment; if (payment.statut === 'PAYE') this.cart.reset(); this.loading = false; },
         error: error => { this.error = httpErrorMessage(error); this.loading = false; }
       }); },
       error: error => { this.error = httpErrorMessage(error); this.loading = false; }
     });
   }
-  paymentLabel(): string { return this.payment?.statut === 'PAYE' ? 'Paiement confirmé' : 'Paiement non confirmé'; }
+  paymentLabel(): string { return this.order?.total === 0 ? 'Aucun paiement nécessaire' : this.payment?.statut === 'PAYE' ? 'Paiement confirmé' : 'Paiement non confirmé'; }
 }

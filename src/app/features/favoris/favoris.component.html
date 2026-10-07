@@ -15,8 +15,8 @@
         <div class="favorite-info">
           <h2><a [routerLink]="['/produits', item.produitId]">{{ item.nom }}</a></h2>
           <div class="price">
-            <strong>{{ item.prixPromotion || item.prix | tnd }}</strong>
-            <del *ngIf="item.prixPromotion">{{ item.prix | tnd }}</del>
+            <strong>{{ item.prixPromotion ?? item.prix | tnd }}</strong>
+            <del *ngIf="item.prixPromotion != null">{{ item.prix | tnd }}</del>
           </div>
           <p *ngIf="!item.actif">Produit indisponible</p>
           <button type="button" (click)="retirer(item)" [disabled]="favoris.isPending(item.produitId)">
