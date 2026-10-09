@@ -7,6 +7,7 @@ import { AuthService } from '../../../../core/services/auth.service';
 import { httpErrorMessage } from '../../../../core/services/http-error';
 import { safeReturnUrl } from '../../../../core/services/return-url';
 import { ToastService } from '../../../../core/services/toast.service';
+import { Role } from '../../../../core/models/role';
 
 function notBlank(control: AbstractControl): { blank: true } | null {
   return typeof control.value === 'string' && !control.value.trim() ? { blank: true } : null;
@@ -47,6 +48,21 @@ export class RegisterComponent {
     }).pipe(takeUntilDestroyed(this.destroyRef), finalize(() => { this.loading = false; })).subscribe({
       next: () => { this.form.controls.motDePasse.reset(); this.toast.success('Votre compte a été créé.'); void this.router.navigateByUrl(this.returnUrl); },
       error: (error: unknown) => { this.error = httpErrorMessage(error); }
+    });
+  }
+
+  googleLogin(credential: string): void {
+    if (this.loading) return;
+    this.error = '';
+    this.loading = true;
+    this.auth.google(credential).pipe(
+      takeUntilDestroyed(this.destroyRef), finalize(() => { this.loading = false; })
+    ).subscribe({
+      next: user => {
+        this.toast.success('Bienvenue sur Amansia.');
+        void this.router.navigateByUrl(user.role === Role.ADMINISTRATEUR ? '/admin/dashboard' : this.returnUrl);
+      },
+      error: () => { this.error = 'Connexion Google impossible. Vérifiez votre compte ou réessayez.'; }
     });
   }
 }

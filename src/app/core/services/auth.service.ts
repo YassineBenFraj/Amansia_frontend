@@ -43,6 +43,14 @@ export class AuthService {
     return this.authenticate('register', request);
   }
 
+  google(credential: string): Observable<Utilisateur> {
+    return this.authenticate('google', { credential });
+  }
+
+  associerGoogle(credential: string): Observable<Utilisateur> {
+    return this.http.post<Utilisateur>(`${environment.apiUrl}/auth/google/link`, { credential });
+  }
+
   demanderReinitialisation(email: string): Observable<{ message: string }> {
     return this.http.post<{ message: string }>(`${environment.apiUrl}/auth/mot-de-passe-oublie`, { email });
   }
@@ -122,8 +130,8 @@ export class AuthService {
   }
 
   private authenticate(
-    action: 'login' | 'register',
-    request: LoginRequest | RegisterRequest,
+    action: 'login' | 'register' | 'google',
+    request: LoginRequest | RegisterRequest | { credential: string },
   ): Observable<Utilisateur> {
     return this.http
       .post<AuthResponse>(`${environment.apiUrl}/auth/${action}`, request)

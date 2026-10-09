@@ -22,6 +22,8 @@
         <p *ngIf="error" class="error-banner" role="alert">{{ error }}</p>
         <button class="button primary full-width" type="submit" [disabled]="loading" [attr.aria-busy]="loading">{{ loading ? 'Création en cours…' : 'Créer mon compte' }} <span aria-hidden="true">→</span></button>
       </form>
+      <div class="auth-divider"><span>ou</span></div>
+      <app-google-button [busy]="loading" (credential)="googleLogin($event)"></app-google-button>
       <p class="auth-switch">Déjà chez Amansia ? <a routerLink="/auth/login" [queryParams]="{ returnUrl }">Se connecter</a></p>
     </div>
     <p class="form-foot">Les champs indiqués « facultatif » peuvent rester vides.</p>

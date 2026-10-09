@@ -1,0 +1,2 @@
+.google-action{width:100%;min-height:44px}.google-action.busy{pointer-events:none;opacity:.55}.google-button{display:flex;justify-content:center;width:100%;min-height:44px}.google-error{text-align:center;color:#a0352e;font-size:.82rem;margin:10px 0 0}
+.google-fallback{display:block;width:100%;height:44px;border:1px solid var(--line);border-radius:5px;background:#fff;color:var(--ink);font-weight:600;opacity:.55}

@@ -12,7 +12,7 @@ export class JwtInterceptor implements HttpInterceptor {
     const api = new URL(environment.apiUrl);
     const url = new URL(request.url, window.location.origin);
     const isApi = url.origin === api.origin && (url.pathname === api.pathname || url.pathname.startsWith(`${api.pathname}/`));
-    const isLogin = [`${api.pathname}/auth/login`, `${api.pathname}/auth/register`].includes(url.pathname);
+    const isLogin = [`${api.pathname}/auth/login`, `${api.pathname}/auth/register`, `${api.pathname}/auth/google`].includes(url.pathname);
     const token = isApi && !isLogin ? this.session.getToken() : null;
     const authenticated = token ? request.clone({ setHeaders: { Authorization: `Bearer ${token}` } }) : request;
     return next.handle(authenticated).pipe(catchError((error: unknown) => {

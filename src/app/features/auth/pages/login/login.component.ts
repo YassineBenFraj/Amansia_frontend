@@ -46,4 +46,19 @@ export class LoginComponent {
       error: (error: unknown) => { this.error = httpErrorMessage(error); }
     });
   }
+
+  googleLogin(credential: string): void {
+    if (this.loading) return;
+    this.error = '';
+    this.loading = true;
+    this.auth.google(credential).pipe(
+      takeUntilDestroyed(this.destroyRef), finalize(() => { this.loading = false; })
+    ).subscribe({
+      next: user => {
+        this.toast.success('Bienvenue sur Amansia.');
+        void this.router.navigateByUrl(user.role === Role.ADMINISTRATEUR ? '/admin/dashboard' : this.returnUrl);
+      },
+      error: () => { this.error = 'Connexion Google impossible. Vérifiez votre compte ou réessayez.'; }
+    });
+  }
 }

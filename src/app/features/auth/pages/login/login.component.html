@@ -18,6 +18,8 @@
         <p *ngIf="error" class="error-banner" role="alert">{{ error }}</p>
         <button class="button primary full-width" type="submit" [disabled]="loading" [attr.aria-busy]="loading">{{ loading ? 'Connexion en cours…' : 'Se connecter' }} <span aria-hidden="true">→</span></button>
       </form>
+      <div class="auth-divider"><span>ou</span></div>
+      <app-google-button [busy]="loading" (credential)="googleLogin($event)"></app-google-button>
       <p class="auth-switch">Vous découvrez Amansia ? <a routerLink="/auth/register" [queryParams]="{ returnUrl }">Créer un compte</a></p>
     </div>
     <p class="form-foot">Un espace personnel, pour vous sentir chez vous.</p>

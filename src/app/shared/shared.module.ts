@@ -11,14 +11,15 @@ import { ProductShelfComponent } from './components/product-shelf/product-shelf.
 import { RecentlyViewedComponent } from './components/recently-viewed/recently-viewed.component';
 import { ComparisonBarComponent } from './components/comparison-bar/comparison-bar.component';
 import { NotificationBellComponent } from './components/notification-bell/notification-bell.component';
+import { GoogleButtonComponent } from './components/google-button/google-button.component';
 
 
 
 @NgModule({
-  declarations: [FieldErrorComponent, PublicLayoutComponent, TndPipe, ToastContainerComponent, ImageFallbackDirective, ConfirmationDialogComponent, ProductShelfComponent, RecentlyViewedComponent, ComparisonBarComponent, NotificationBellComponent],
+  declarations: [FieldErrorComponent, PublicLayoutComponent, TndPipe, ToastContainerComponent, ImageFallbackDirective, ConfirmationDialogComponent, ProductShelfComponent, RecentlyViewedComponent, ComparisonBarComponent, NotificationBellComponent, GoogleButtonComponent],
   imports: [
     CommonModule, RouterModule
   ],
-  exports: [CommonModule, RouterModule, FieldErrorComponent, PublicLayoutComponent, TndPipe, ToastContainerComponent, ImageFallbackDirective, ConfirmationDialogComponent, ProductShelfComponent, RecentlyViewedComponent, ComparisonBarComponent, NotificationBellComponent]
+  exports: [CommonModule, RouterModule, FieldErrorComponent, PublicLayoutComponent, TndPipe, ToastContainerComponent, ImageFallbackDirective, ConfirmationDialogComponent, ProductShelfComponent, RecentlyViewedComponent, ComparisonBarComponent, NotificationBellComponent, GoogleButtonComponent]
 })
 export class SharedModule { }

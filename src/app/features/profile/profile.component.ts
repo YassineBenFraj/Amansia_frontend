@@ -24,6 +24,9 @@ export class ProfileComponent {
   saving = false;
   photoBusy = false;
   passwordBusy = false;
+  googleBusy = false;
+  googleLinked = false;
+  googleError = '';
   error = '';
   photoError = '';
   passwordError = '';
@@ -105,6 +108,18 @@ export class ProfileComponent {
       .subscribe({
         next: () => { this.password.reset(); this.toast.success('Mot de passe modifié.'); },
         error: error => { this.passwordError = httpErrorMessage(error); this.toast.error(this.passwordError); }
+      });
+  }
+
+  linkGoogle(credential: string): void {
+    if (this.googleBusy) return;
+    this.googleBusy = true;
+    this.googleError = '';
+    this.auth.associerGoogle(credential)
+      .pipe(finalize(() => this.googleBusy = false), takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => { this.googleLinked = true; this.toast.success('Compte Google associé. Vous pouvez désormais vous connecter avec Google.'); },
+        error: () => { this.googleError = 'Association impossible. Choisissez un compte Google avec la même adresse email.'; }
       });
   }
 

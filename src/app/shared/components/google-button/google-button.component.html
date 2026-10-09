@@ -1,0 +1,5 @@
+<div class="google-action" [class.busy]="busy" [attr.aria-busy]="busy">
+  <div #button class="google-button"></div>
+  <button *ngIf="error" class="google-fallback" type="button" disabled>Continuer avec Google</button>
+  <p *ngIf="error" class="google-error" role="alert">{{ error }}</p>
+</div>

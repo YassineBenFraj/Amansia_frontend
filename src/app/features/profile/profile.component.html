@@ -28,6 +28,13 @@
         <p *ngIf="passwordError" class="form-error" role="alert">{{ passwordError }}</p>
         <button class="button primary" type="submit" [disabled]="passwordBusy">{{ passwordBusy ? 'Modification…' : 'Modifier mon mot de passe' }}</button>
       </form></section>
+      <section class="profile-card google-link-card" aria-labelledby="google-link-title">
+        <h2 id="google-link-title">Connexion Google</h2>
+        <p>Associez un compte Google utilisant {{ current.email }} pour disposer des deux méthodes de connexion.</p>
+        <app-google-button [busy]="googleBusy" (credential)="linkGoogle($event)"></app-google-button>
+        <p *ngIf="googleLinked" class="google-success" role="status">Compte Google associé.</p>
+        <p *ngIf="googleError" class="form-error" role="alert">{{ googleError }}</p>
+      </section>
     </div>
   </div>
 </main>
